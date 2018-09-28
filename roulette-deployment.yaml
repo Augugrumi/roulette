@@ -1,0 +1,44 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: roulette
+  namespace: default
+  labels:
+    k8s-app: roulette
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: roulette
+  template:
+    metadata:
+      labels:
+        k8s-app: roulette
+        name: roulette
+    spec:
+      containers:
+      - name: harbor
+        image: augugrumi/ruolette
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        - name: ROULETTE_DATABASE_IP
+          value: /config/api-diagram.json
+        - name: ROULETTE_DATABASE_PORT
+          value: /config/api-diagram.json
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: roulette-service
+  namespace: default
+spec:
+  selector:
+    k8s-app: roulette
+  ports:
+  - protocol: TCP
+    port: 80
+    name: web
+  type: NodePort
