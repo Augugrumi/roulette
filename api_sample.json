@@ -1,0 +1,17 @@
+[
+  {
+    "name": "/hello",
+    "type": "get",
+    "function": "routes.HelloWorldRoute"
+  },
+  {
+    "name": "/route/add/:spi",
+    "type": "post",
+    "function": "routes.RouteAdderRoute"
+  },
+  {
+    "name": "/route/get/:spi",
+    "type": "get",
+    "function": "routes.RouteGetterRoute"
+  }
+]

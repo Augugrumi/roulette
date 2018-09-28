@@ -1,6 +1,39 @@
+import database.DBInitializer;
+import org.slf4j.Logger;
+import util.ConfigManager;
+
+import java.io.IOException;
+
+import static spark.Spark.port;
+
+/**
+ * Main program class. It parses the command line args and starts the Spark Java server, loading the desired API.
+ *
+ * @see ArgParser
+ * @see DynamicAPILoader
+ */
 public class Main {
 
-    public static void main (String[] args) {
-        System.out.println("Hello world");
+    final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(Main.class);
+
+    public static void main (String args[]) {
+
+        port(ConfigManager.getConfig().getPort());
+
+        try {
+            DBInitializer.init();
+            LOG.info("Database successfully retrieved");
+
+            DynamicAPILoader apiLoader = new DynamicAPILoader(ConfigManager.getConfig().getAPIConfig());
+            apiLoader.load();
+            LOG.info("Route successfully set");
+        } catch (IOException e) {
+            LOG.error("The Application could not load a valid API configuration");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (Exception e) {
+            LOG.error("The Application could not initialize the Database");
+            e.printStackTrace();
+        }
     }
 }
