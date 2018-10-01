@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+import routes.util.ParamsName;
 import routes.util.ResponseCreator;
 import spark.Filter;
 import spark.Request;
@@ -23,17 +24,15 @@ import util.ConfigManager;
 public class RouteUpdaterRoute implements Route {
 
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
-    final private static String SPI_PARAM_NAME = "spi";
-    final private static String SI_PARAM_NAME = "si";
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
         LOG.info("Update route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
-        final String SPId = request.params(SPI_PARAM_NAME);
+        final String SPId = request.params(ParamsName.SPI);
         JSONObject body = new JSONObject(request.body());
-        final JSONArray addressList = body.getJSONArray(SI_PARAM_NAME);
+        final JSONArray addressList = body.getJSONArray(ParamsName.SI);
         ResponseCreator res;
 
         final MongoCollection<Document> collection = db.getCollection(DBValues.COLLECTION_NAME);
@@ -47,8 +46,8 @@ public class RouteUpdaterRoute implements Route {
         }  else {
             LOG.info("Hit");
             Document query = new Document();
-            query.append(SPI_PARAM_NAME, SPId);
-            toUpdate.put(SI_PARAM_NAME, addressList);
+            query.append(ParamsName.SPI, SPId);
+            toUpdate.put(ParamsName.SI, addressList);
             routes.replaceOne(query, toUpdate);
             res = new ResponseCreator(ResponseCreator.ResponseType.OK);
 
