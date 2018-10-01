@@ -1,0 +1,10 @@
+.gitignore
+.travis.yml
+.idea
+target
+*.log*
+LICENSE
+README.md
+roulette_deployment.yaml
+api_definition.json
+db_definition.json
