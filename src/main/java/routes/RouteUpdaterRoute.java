@@ -35,8 +35,6 @@ public class RouteUpdaterRoute implements Route {
         final JSONArray addressList = body.getJSONArray(ParamsName.SI);
         ResponseCreator res;
 
-        final MongoCollection<Document> collection = db.getCollection(DBValues.COLLECTION_NAME);
-
         Document toUpdate = routes.find(new RouteEntry().addSPI(SPId).build()).first();
 
         if (toUpdate == null) {
@@ -45,9 +43,12 @@ public class RouteUpdaterRoute implements Route {
             res.add(ResponseCreator.Fields.REASON, "Route does not existing");
         }  else {
             LOG.info("Hit");
+            LOG.info(addressList.toString());
+
             Document query = new Document();
             query.append(ParamsName.SPI, SPId);
-            toUpdate.put(ParamsName.SI, addressList);
+            toUpdate.put(ParamsName.SI, addressList.toString());
+            LOG.info(toUpdate.toString());
             routes.replaceOne(query, toUpdate);
             res = new ResponseCreator(ResponseCreator.ResponseType.OK);
 
