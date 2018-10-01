@@ -6,6 +6,7 @@ import database.DBValues;
 import database.entrybuilders.RouteEntry;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import routes.util.ParamsName;
 import routes.util.ResponseCreator;
@@ -32,9 +33,9 @@ public class VnfNameGetterRoute  implements Route {
         if (route != null) {
             LOG.debug((String)route.get("si"));
             JSONArray vnfNames = new JSONArray((String)route.get("si"));
-            String name;
+            JSONObject name;
             try {
-                name = vnfNames.getString(Integer.parseInt(serviceIndex));
+                name = (JSONObject)(vnfNames.get(Integer.parseInt(serviceIndex)));
                 LOG.debug("Hit");
                 res = new ResponseCreator(ResponseCreator.ResponseType.OK);
                 res.add(ResponseCreator.Fields.CONTENT, name);
