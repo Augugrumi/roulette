@@ -21,7 +21,7 @@ public class RouteGetterRoute implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
-        LOG.info("Get route called");
+        LOG.debug("Get route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
@@ -29,12 +29,12 @@ public class RouteGetterRoute implements Route {
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
         if (route != null) {
-            LOG.info("Hit");
+            LOG.debug("Hit");
 
             res = new ResponseCreator(ResponseCreator.ResponseType.OK);
             res.add(ResponseCreator.Fields.CONTENT, route.toJson());
         } else {
-            LOG.info("Miss");
+            LOG.debug("Miss");
 
             res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
             res.add(ResponseCreator.Fields.REASON, "Route not found");

@@ -35,7 +35,7 @@ public class RouteAdderRoute implements Route {
 
             if (collection.find(new RouteEntry().addSPI(SPId).build()).first() == null) {
 
-                LOG.info("Adding a new route to the SFC table with id" + SPId);
+                LOG.debug("Adding a new route to the SFC table with id" + SPId);
                 collection.insertOne(
                         new RouteEntry()
                                 .addSPI(request.params(ParamsName.SPI))

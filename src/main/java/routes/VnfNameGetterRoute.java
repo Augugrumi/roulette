@@ -21,7 +21,7 @@ public class VnfNameGetterRoute  implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
-        LOG.info("Get vnf name called");
+        LOG.debug("Get vnf name called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
@@ -30,23 +30,23 @@ public class VnfNameGetterRoute  implements Route {
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
         if (route != null) {
-            LOG.info((String)route.get("si"));
+            LOG.debug((String)route.get("si"));
             JSONArray vnfNames = new JSONArray((String)route.get("si"));
             String name;
             try {
                 name = vnfNames.getString(Integer.parseInt(serviceIndex));
-                LOG.info("Hit");
+                LOG.debug("Hit");
                 res = new ResponseCreator(ResponseCreator.ResponseType.OK);
                 res.add(ResponseCreator.Fields.CONTENT, name);
             } catch (Exception e) {
-                LOG.info("Index miss");
+                LOG.debug("Index miss");
 
                 res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
                 res.add(ResponseCreator.Fields.REASON, "Index " + serviceIndex + " not found on route " + SPId);
             }
 
         } else {
-            LOG.info("Route miss");
+            LOG.debug("Route miss");
 
             res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
             res.add(ResponseCreator.Fields.REASON, "Route " + SPId + " not found");

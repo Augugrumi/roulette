@@ -22,7 +22,7 @@ public class RouteDeleterRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        LOG.info("Get route called");
+        LOG.debug("Get route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
@@ -34,7 +34,7 @@ public class RouteDeleterRoute implements Route {
             res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
             res.add(ResponseCreator.Fields.REASON, "Route does not existing");
         } else {
-            LOG.info("Deleting route " + SPId);
+            LOG.debug("Deleting route " + SPId);
             routes.deleteOne(toRemove);
             res = new ResponseCreator(ResponseCreator.ResponseType.OK);
         }

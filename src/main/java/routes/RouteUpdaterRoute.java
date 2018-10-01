@@ -21,7 +21,7 @@ public class RouteUpdaterRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        LOG.info("Update route called");
+        LOG.debug("Update route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
@@ -32,17 +32,14 @@ public class RouteUpdaterRoute implements Route {
         Document toUpdate = routes.find(new RouteEntry().addSPI(SPId).build()).first();
 
         if (toUpdate == null) {
-            LOG.info("Miss");
+            LOG.debug("Miss");
             res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
             res.add(ResponseCreator.Fields.REASON, "Route does not existing");
         }  else {
-            LOG.info("Hit");
-            LOG.info(addressList.toString());
-
+            LOG.debug("Hit");
             Document query = new Document();
             query.append(ParamsName.SPI, SPId);
             toUpdate.put(ParamsName.SI, addressList.toString());
-            LOG.info(toUpdate.toString());
             routes.replaceOne(query, toUpdate);
             res = new ResponseCreator(ResponseCreator.ResponseType.OK);
 
