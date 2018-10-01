@@ -2,7 +2,6 @@ package util;
 
 import org.apache.commons.cli.*;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 
 import java.io.FileInputStream;
@@ -65,22 +64,7 @@ public class ArgParser {
         }
         if (cmd.hasOption(DATABASE_JSON_OPTION_SHORT) && cmd.getOptionValue(DATABASE_JSON_OPTION_SHORT) != null) {
             try (final FileInputStream fis = new FileInputStream(cmd.getOptionValue(DATABASE_JSON_OPTION_SHORT))) {
-
-                JSONObject databaseJson = new JSONObject(readFile(fis));
-
-                if (databaseJson.getInt(DBJSONDefinitions.PORT_FIELD) != 0) {
-                    ConfigManager.getConfig().setDBPort(databaseJson.getInt(DBJSONDefinitions.PORT_FIELD));
-                }
-                if (databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD) != null) {
-                    ConfigManager.getConfig().setDBIP(databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD));
-                }
-                if (databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD) != null) {
-                    ConfigManager.getConfig().setDBUsername(databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD));
-                }
-                if (databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD) != null) {
-                    ConfigManager.getConfig().setDBPassword(databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD));
-                }
-
+                ConfigManager.getConfig().readBJson(fis);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 throw new ParseException("Impossible to find a suitable JSON config file");
@@ -92,17 +76,5 @@ public class ArgParser {
                 throw new ParseException("Failure parsing the database JSON config file: not a valid JSON");
             }
         }
-    }
-
-    private String readFile(FileInputStream fis) throws IOException {
-        StringBuilder res = new StringBuilder();
-
-        int i;
-        while ((i = fis.read()) != -1) {
-            res.append((char)i);
-        }
-
-        LOG.debug("Read:\n" + res.toString());
-        return res.toString();
     }
 }
