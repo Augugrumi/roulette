@@ -5,6 +5,9 @@ import com.mongodb.client.MongoDatabase;
 import database.DBValues;
 import database.entrybuilders.RouteEntry;
 import org.bson.Document;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import routes.util.ParamsName;
 import routes.util.ResponseCreator;
@@ -13,31 +16,27 @@ import spark.Response;
 import spark.Route;
 import util.ConfigManager;
 
-public class RouteGetterRoute implements Route {
+public class RouteDeleterRoute implements Route {
 
-    final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteGetterRoute.class);
-
+    final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-
         LOG.debug("Get route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
         ResponseCreator res;
 
-        Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
-        if (route != null) {
-            LOG.debug("Hit");
+        Document toRemove = routes.find(new RouteEntry().addSPI(SPId).build()).first();
 
-            res = new ResponseCreator(ResponseCreator.ResponseType.OK);
-            res.add(ResponseCreator.Fields.CONTENT, route.toJson());
-        } else {
-            LOG.debug("Miss");
-
+        if (toRemove == null) {
             res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
-            res.add(ResponseCreator.Fields.REASON, "Route not found");
+            res.add(ResponseCreator.Fields.REASON, "Route does not existing");
+        } else {
+            LOG.debug("Deleting route " + SPId);
+            routes.deleteOne(toRemove);
+            res = new ResponseCreator(ResponseCreator.ResponseType.OK);
         }
 
         return res;

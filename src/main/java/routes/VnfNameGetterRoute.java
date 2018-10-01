@@ -6,6 +6,7 @@ import database.DBValues;
 import database.entrybuilders.RouteEntry;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import routes.util.ParamsName;
 import routes.util.ResponseCreator;
@@ -19,9 +20,9 @@ public class VnfNameGetterRoute  implements Route {
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteGetterRoute.class);
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
 
-        LOG.info("Get vnf name called");
+        LOG.debug("Get vnf name called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
@@ -30,23 +31,23 @@ public class VnfNameGetterRoute  implements Route {
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
         if (route != null) {
-            LOG.info((String)route.get("si"));
-            JSONArray vnfNames = new JSONArray((String)route.get("si"));
-            String name;
+            LOG.debug(route.getString("si"));
+            JSONArray vnfNames = new JSONArray(route.getString("si"));
+            JSONObject name;
             try {
-                name = vnfNames.getString(Integer.parseInt(serviceIndex));
-                LOG.info("Hit");
+                name = (JSONObject)(vnfNames.get(Integer.parseInt(serviceIndex)));
+                LOG.debug("Hit");
                 res = new ResponseCreator(ResponseCreator.ResponseType.OK);
                 res.add(ResponseCreator.Fields.CONTENT, name);
             } catch (Exception e) {
-                LOG.info("Index miss");
+                LOG.debug("Index miss");
 
                 res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
                 res.add(ResponseCreator.Fields.REASON, "Index " + serviceIndex + " not found on route " + SPId);
             }
 
         } else {
-            LOG.info("Route miss");
+            LOG.debug("Route miss");
 
             res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
             res.add(ResponseCreator.Fields.REASON, "Route " + SPId + " not found");
