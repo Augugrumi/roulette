@@ -20,7 +20,7 @@ public class VnfNameGetterRoute  implements Route {
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteGetterRoute.class);
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
 
         LOG.debug("Get vnf name called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
@@ -31,8 +31,8 @@ public class VnfNameGetterRoute  implements Route {
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
         if (route != null) {
-            LOG.debug((String)route.get("si"));
-            JSONArray vnfNames = new JSONArray((String)route.get("si"));
+            LOG.debug(route.getString("si"));
+            JSONArray vnfNames = new JSONArray(route.getString("si"));
             JSONObject name;
             try {
                 name = (JSONObject)(vnfNames.get(Integer.parseInt(serviceIndex)));

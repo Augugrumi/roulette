@@ -20,7 +20,7 @@ public class RouteUpdaterRoute implements Route {
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
 
     @Override
-    public Object handle(Request request, Response response) {
+    public Object handle(Request request, Response response) throws Exception {
         LOG.debug("Update route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
@@ -33,8 +33,10 @@ public class RouteUpdaterRoute implements Route {
 
         if (toUpdate == null) {
             LOG.debug("Miss");
-            res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
-            res.add(ResponseCreator.Fields.REASON, "Route does not existing");
+
+            Route add = new RouteAdderRoute();
+
+            return add.handle(request, response);
         }  else {
             LOG.debug("Hit");
             Document query = new Document();
@@ -44,7 +46,6 @@ public class RouteUpdaterRoute implements Route {
             res = new ResponseCreator(ResponseCreator.ResponseType.OK);
 
         }
-
 
         return res;
     }
