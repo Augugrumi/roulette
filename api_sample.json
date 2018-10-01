@@ -5,27 +5,27 @@
     "function": "routes.HelloWorldRoute"
   },
   {
-    "name": "/route/add/:spi",
+    "name": "/route/:spi",
     "type": "post",
     "function": "routes.RouteAdderRoute"
   },
   {
-    "name": "/route/get/:spi",
+    "name": "/route/:spi",
     "type": "get",
     "function": "routes.RouteGetterRoute"
   },
   {
-    "name": "/route/get/:spi/:si",
+    "name": "/route/:spi/:si",
     "type": "get",
     "function": "routes.VnfNameGetterRoute"
   },
   {
-    "name": "/route/delete/:spi",
+    "name": "/route/:spi",
     "type": "delete",
     "function": "routes.RouteDeleterRoute"
   },
   {
-    "name": "/route/update/:spi",
+    "name": "/route/:spi",
     "type": "put",
     "function": "routes.RouteUpdaterRoute"
   }
