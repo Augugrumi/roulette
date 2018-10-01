@@ -18,5 +18,15 @@
     "name": "/route/get/:spi/:si",
     "type": "get",
     "function": "routes.VnfNameGetterRoute"
+  },
+  {
+    "name": "/route/delete/:spi",
+    "type": "delete",
+    "function": "routes.RouteDeleterRoute"
+  },
+  {
+    "name": "/route/update/:spi",
+    "type": "put",
+    "function": "routes.RouteUpdaterRoute"
   }
 ]
