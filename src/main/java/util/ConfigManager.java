@@ -4,8 +4,12 @@ import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * Singleton handling requests to the true configuration class
@@ -52,18 +56,19 @@ public class ConfigManager {
         final private String R_DB_NAME = "ROULETTE_DATABASE_NAME";
         final private String R_DB_USERNAME = "ROULETTE_DATABASE_USERNAME";
         final private String R_DB_PASSWORD = "ROULETTE_DATABASE_PASSWORD";
+        final private String R_DB_JSON = "ROULETTE_DATABASE_JSON_CONFIG";
         // End config keys
 
         final private static Logger LOG = LoggerFactory.getLogger(Config.class);
-        
+
+        private MongoClient mongoClient;
         private int port;
         private int databasePort;
         private String APIConfigPath;
         private String databaseIP;
         private String databaseName;
-        final private MongoClient MONGO_CLIENT;
-        final private String DATABASE_USERNAME;
-        final private String DATABASE_PASSWORD;
+        private String databaseUsername;
+        private String databasePassword;
 
         private Config() {
             LOG.debug("Environment variable " + R_PORT + " set to: " + System.getenv(R_PORT));
@@ -76,43 +81,71 @@ public class ConfigManager {
             LOG.debug("Environment variable " + R_API + " set to: " + System.getenv(R_API));
             this.APIConfigPath = System.getenv(R_API);
 
-            if (System.getenv(R_DB_IP) != null) {
-                databaseIP = System.getenv(R_DB_IP);
+            if (System.getenv(R_DB_JSON) == null) {
+                if (System.getenv(R_DB_IP) != null) {
+                    databaseIP = System.getenv(R_DB_IP);
+                } else {
+                    LOG.warn("Database IP not specified, using localhost");
+                    databaseIP = "localhost";
+                }
+
+                if (System.getenv(R_DB_PORT) != null) {
+                    this.databasePort = Integer.parseInt(System.getenv(R_DB_PORT));
+                } else {
+                    this.databasePort = MONGO_DB_STANDARD_PORT;
+                }
+
+                if (System.getenv(R_DB_NAME) != null) {
+                    this.databaseName = System.getenv(R_DB_NAME);
+                } else {
+                    this.databaseName = ROULETTE_DEFAULT_DB_NAME;
+                }
+
+                if (System.getenv(R_DB_USERNAME) != null && System.getenv(R_DB_PASSWORD) != null) {
+                    this.databaseUsername = System.getenv(R_DB_USERNAME);
+                    this.databasePassword = System.getenv(R_DB_PASSWORD);
+                } else {
+                    this.databaseUsername = "";
+                    this.databasePassword = "";
+                }
             } else {
-                LOG.error("You must set a valid database IP");
+                try (final FileInputStream fis = new FileInputStream(System.getenv(R_DB_JSON))) {
+                    readBJson(fis);
+                } catch (IOException e) {
+                    LOG.error("Error while reading the database JSON config file");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        }
+
+        private String readFile(FileInputStream fis) throws IOException {
+            StringBuilder res = new StringBuilder();
+
+            int i;
+            while ((i = fis.read()) != -1) {
+                res.append((char)i);
             }
 
-            if (System.getenv(R_DB_PORT) != null) {
-                this.databasePort = Integer.parseInt(System.getenv(R_DB_PORT));
-            } else {
-                this.databasePort = MONGO_DB_STANDARD_PORT;
-            }
+            LOG.debug("Read:\n" + res.toString());
+            return res.toString();
+        }
 
-            if (System.getenv(R_DB_NAME) != null) {
-                this.databaseName = System.getenv(R_DB_NAME);
-            } else {
-                this.databaseName = ROULETTE_DEFAULT_DB_NAME;
-            }
+        void readBJson(FileInputStream fis) throws IOException {
 
-            if (System.getenv(R_DB_USERNAME) != null && System.getenv(R_DB_PASSWORD) != null) {
-                this.DATABASE_USERNAME = System.getenv(R_DB_USERNAME);
-                this.DATABASE_PASSWORD = System.getenv(R_DB_PASSWORD);
-            } else {
-                this.DATABASE_USERNAME = "";
-                this.DATABASE_PASSWORD = "";
-            }
+                JSONObject databaseJson = new JSONObject(readFile(fis));
 
-            // Create MongoDB connection
-            StringBuilder connection = new StringBuilder();
-            connection.append(MONGO_DB_PROTOCOL)
-                    .append(DATABASE_USERNAME)
-                    .append(":")
-                    .append(DATABASE_PASSWORD)
-                    .append("@")
-                    .append(databaseIP)
-                    .append(":")
-                    .append(databasePort);
-            MONGO_CLIENT = MongoClients.create(new ConnectionString(connection.toString()));
+                if (databaseJson.getInt(DBJSONDefinitions.PORT_FIELD) != 0) {
+                    this.databasePort = databaseJson.getInt(DBJSONDefinitions.PORT_FIELD);
+                }
+                if (databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD) != null) {
+                    this.databaseIP = databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD);
+                }
+                if (databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD) != null &&
+                        databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD) != null) {
+                    this.databaseUsername = databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD);
+                    this.databasePassword = databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD);
+                }
         }
 
         /**
@@ -140,13 +173,70 @@ public class ConfigManager {
             return APIConfigPath;
         }
 
-        public MongoDatabase getDatabase () {
 
-            return MONGO_CLIENT.getDatabase(databaseName);
+        public synchronized MongoDatabase getDatabase () {
+            if (mongoClient == null) {
+                // Create MongoDB connection
+                StringBuilder connection = new StringBuilder();
+                connection.append(MONGO_DB_PROTOCOL)
+                        .append(databaseUsername)
+                        .append(":")
+                        .append(databasePassword)
+                        .append("@")
+                        .append(databaseIP)
+                        .append(":")
+                        .append(databasePort);
+                mongoClient = MongoClients.create(new ConnectionString(connection.toString()));
+            }
+            return mongoClient.getDatabase(databaseName);
         }
 
+        /**
+         * Getter method to obtain the DB name.
+         * @return the name of the Roulette DB
+         */
         public String getDefaultDBName () {
             return databaseName;
+        }
+
+        /**
+         * Setter method to change port number
+         * @param port a new port destination
+         */
+        void setPort(int port) {
+            this.port = port;
+        }
+
+        /**
+         * Setter method to change API filepath
+         * @param APIPath the new API filepath
+         */
+        void setAPIConfig(String APIPath) {
+            this.APIConfigPath = APIPath;
+        }
+
+        /**
+         * Setter method to change the database ip
+         * @param ip the new IP address
+         */
+        void setDBIP(String ip) {
+            this.databaseIP = ip;
+        }
+
+        /**
+         * Setter method to change the address port
+         * @param port the new database port
+         */
+        void setDBPort(int port) {
+            this.databasePort = port;
+        }
+
+        void setDBUsername(String username) {
+            this.databaseUsername = username;
+        }
+
+        void setDBPassword(String password) {
+            this.databasePassword = password;
         }
     }
 }
