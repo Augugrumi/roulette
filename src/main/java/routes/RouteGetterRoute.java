@@ -6,6 +6,7 @@ import database.DBValues;
 import database.entrybuilders.RouteEntry;
 import org.bson.Document;
 import org.slf4j.Logger;
+import routes.util.ParamsName;
 import routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
@@ -15,7 +16,6 @@ import util.ConfigManager;
 public class RouteGetterRoute implements Route {
 
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteGetterRoute.class);
-    final private static String SPI_PARAM_NAME = "spi";
 
 
     @Override
@@ -24,7 +24,7 @@ public class RouteGetterRoute implements Route {
         LOG.info("Get route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
-        final String SPId = request.params(SPI_PARAM_NAME);
+        final String SPId = request.params(ParamsName.SPI);
         ResponseCreator res;
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();

@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+import routes.util.ParamsName;
 import routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
@@ -18,8 +19,6 @@ import util.ConfigManager;
 public class RouteAdderRoute implements Route {
 
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
-    final private static String SPI_PARAM_NAME = "spi";
-    final private static String SI_PARAM_NAME = "si";
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -30,16 +29,16 @@ public class RouteAdderRoute implements Route {
 
         try {
             body = new JSONObject(request.body());
-            final JSONArray addressList = body.getJSONArray(SI_PARAM_NAME);
+            final JSONArray addressList = body.getJSONArray(ParamsName.SI);
             final MongoCollection<Document> collection = db.getCollection(DBValues.COLLECTION_NAME);
-            final String SPId = request.params(SPI_PARAM_NAME);
+            final String SPId = request.params(ParamsName.SPI);
 
             if (collection.find(new RouteEntry().addSPI(SPId).build()).first() == null) {
 
                 LOG.info("Adding a new route to the SFC table with id" + SPId);
                 collection.insertOne(
                         new RouteEntry()
-                                .addSPI(request.params(SPI_PARAM_NAME))
+                                .addSPI(request.params(ParamsName.SPI))
                                 .addSI(addressList)
                                 .build()
                 );

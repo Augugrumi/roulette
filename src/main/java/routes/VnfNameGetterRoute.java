@@ -4,11 +4,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import database.DBValues;
 import database.entrybuilders.RouteEntry;
-import org.bson.BsonArray;
 import org.bson.Document;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.slf4j.Logger;
+import routes.util.ParamsName;
 import routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
@@ -18,8 +17,6 @@ import util.ConfigManager;
 public class VnfNameGetterRoute  implements Route {
 
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteGetterRoute.class);
-    final private static String SPI_PARAM_NAME = "spi";
-    final private static String SI_PARAM_NAME = "si";
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -27,8 +24,8 @@ public class VnfNameGetterRoute  implements Route {
         LOG.info("Get vnf name called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
-        final String SPId = request.params(SPI_PARAM_NAME);
-        final String serviceIndex = request.params(SI_PARAM_NAME);
+        final String SPId = request.params(ParamsName.SPI);
+        final String serviceIndex = request.params(ParamsName.SI);
         ResponseCreator res;
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
