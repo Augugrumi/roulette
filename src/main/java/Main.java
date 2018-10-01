@@ -1,5 +1,7 @@
 import database.DBInitializer;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
+import util.ArgParser;
 import util.ConfigManager;
 
 import java.io.IOException;
@@ -18,6 +20,17 @@ public class Main {
 
     public static void main (String args[]) {
 
+        ArgParser parser = new ArgParser(args);
+        try {
+            parser.parse();
+        } catch (ParseException e) {
+            LOG.error("The application failed to correctly parse the supplied arguments");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        LOG.info("Roulette started");
+
         port(ConfigManager.getConfig().getPort());
 
         try {
@@ -31,8 +44,11 @@ public class Main {
             LOG.error("The Application could not load a valid API configuration");
             e.printStackTrace();
             System.exit(1);
+        } catch (NullPointerException e) {
+            LOG.error("NullPointer exception: did you forget to set some required parameters?");
+            e.printStackTrace();
         } catch (Exception e) {
-            LOG.error("The Application could not initialize the Database");
+            LOG.error("Roulette could not be initialized");
             e.printStackTrace();
         }
     }

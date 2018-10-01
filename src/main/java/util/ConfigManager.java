@@ -55,15 +55,15 @@ public class ConfigManager {
         // End config keys
 
         final private static Logger LOG = LoggerFactory.getLogger(Config.class);
-        
+
+        private MongoClient mongoClient;
         private int port;
         private int databasePort;
         private String APIConfigPath;
         private String databaseIP;
         private String databaseName;
-        final private MongoClient MONGO_CLIENT;
-        final private String DATABASE_USERNAME;
-        final private String DATABASE_PASSWORD;
+        private String databaseUsername;
+        private String databasePassword;
 
         private Config() {
             LOG.debug("Environment variable " + R_PORT + " set to: " + System.getenv(R_PORT));
@@ -78,8 +78,6 @@ public class ConfigManager {
 
             if (System.getenv(R_DB_IP) != null) {
                 databaseIP = System.getenv(R_DB_IP);
-            } else {
-                LOG.error("You must set a valid database IP");
             }
 
             if (System.getenv(R_DB_PORT) != null) {
@@ -95,24 +93,13 @@ public class ConfigManager {
             }
 
             if (System.getenv(R_DB_USERNAME) != null && System.getenv(R_DB_PASSWORD) != null) {
-                this.DATABASE_USERNAME = System.getenv(R_DB_USERNAME);
-                this.DATABASE_PASSWORD = System.getenv(R_DB_PASSWORD);
+                this.databaseUsername = System.getenv(R_DB_USERNAME);
+                this.databasePassword = System.getenv(R_DB_PASSWORD);
             } else {
-                this.DATABASE_USERNAME = "";
-                this.DATABASE_PASSWORD = "";
+                this.databaseUsername = "";
+                this.databasePassword = "";
             }
 
-            // Create MongoDB connection
-            StringBuilder connection = new StringBuilder();
-            connection.append(MONGO_DB_PROTOCOL)
-                    .append(DATABASE_USERNAME)
-                    .append(":")
-                    .append(DATABASE_PASSWORD)
-                    .append("@")
-                    .append(databaseIP)
-                    .append(":")
-                    .append(databasePort);
-            MONGO_CLIENT = MongoClients.create(new ConnectionString(connection.toString()));
         }
 
         /**
@@ -140,13 +127,70 @@ public class ConfigManager {
             return APIConfigPath;
         }
 
-        public MongoDatabase getDatabase () {
 
-            return MONGO_CLIENT.getDatabase(databaseName);
+        public synchronized MongoDatabase getDatabase () {
+            if (mongoClient == null) {
+                // Create MongoDB connection
+                StringBuilder connection = new StringBuilder();
+                connection.append(MONGO_DB_PROTOCOL)
+                        .append(databaseUsername)
+                        .append(":")
+                        .append(databasePassword)
+                        .append("@")
+                        .append(databaseIP)
+                        .append(":")
+                        .append(databasePort);
+                mongoClient = MongoClients.create(new ConnectionString(connection.toString()));
+            }
+            return mongoClient.getDatabase(databaseName);
         }
 
+        /**
+         * Getter method to obtain the DB name.
+         * @return the name of the Roulette DB
+         */
         public String getDefaultDBName () {
             return databaseName;
+        }
+
+        /**
+         * Setter method to change port number
+         * @param port a new port destination
+         */
+        void setPort(int port) {
+            this.port = port;
+        }
+
+        /**
+         * Setter method to change API filepath
+         * @param APIPath the new API filepath
+         */
+        void setAPIConfig(String APIPath) {
+            this.APIConfigPath = APIPath;
+        }
+
+        /**
+         * Setter method to change the database ip
+         * @param ip the new IP address
+         */
+        void setDBIP(String ip) {
+            this.databaseIP = ip;
+        }
+
+        /**
+         * Setter method to change the address port
+         * @param port the new database port
+         */
+        void setDBPort(int port) {
+            this.databasePort = port;
+        }
+
+        void setDBUsername(String username) {
+            this.databaseUsername = username;
+        }
+
+        void setDBPassword(String password) {
+            this.databasePassword = password;
         }
     }
 }
