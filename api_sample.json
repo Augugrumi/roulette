@@ -13,5 +13,10 @@
     "name": "/route/get/:spi",
     "type": "get",
     "function": "routes.RouteGetterRoute"
+  },
+  {
+    "name": "/route/get/:spi/:si",
+    "type": "get",
+    "function": "routes.VnfNameGetterRoute"
   }
 ]
