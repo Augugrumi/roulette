@@ -2,5 +2,6 @@ package database;
 
 public interface DBValues {
 
-    public final static String COLLECTION_NAME = "route";
+    String ROUTE_COLLECTION_NAME = "route";
+    String ENDPOINT_COLLECTION_NAME = "endpoint";
 }

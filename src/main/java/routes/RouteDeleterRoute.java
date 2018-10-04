@@ -5,9 +5,6 @@ import com.mongodb.client.MongoDatabase;
 import database.DBValues;
 import database.entrybuilders.RouteEntry;
 import org.bson.Document;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import routes.util.ParamsName;
 import routes.util.ResponseCreator;
@@ -21,10 +18,10 @@ public class RouteDeleterRoute implements Route {
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
         LOG.debug("Get route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
+        final MongoCollection<Document> routes = db.getCollection(DBValues.ROUTE_COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
         ResponseCreator res;
 

@@ -28,5 +28,11 @@
     "name": "/route/:spi",
     "type": "put",
     "function": "routes.RouteUpdaterRoute"
+  },
+  {
+    "name": "/endpoints",
+    "type": "put",
+    "function": "routes.EndpointPutRoute"
+
   }
 ]

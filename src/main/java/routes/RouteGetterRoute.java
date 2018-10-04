@@ -19,11 +19,11 @@ public class RouteGetterRoute implements Route {
 
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
 
         LOG.debug("Get route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
+        final MongoCollection<Document> routes = db.getCollection(DBValues.ROUTE_COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
         ResponseCreator res;
 

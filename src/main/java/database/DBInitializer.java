@@ -18,37 +18,26 @@ public class DBInitializer {
         // Check if the collection already exists
         MongoDatabase db = ConfigManager.getConfig().getDatabase();
 
+        // Route db
         try {
-
-            db.createCollection(DBValues.COLLECTION_NAME);
+            db.createCollection(DBValues.ROUTE_COLLECTION_NAME);
         } catch (MongoCommandException e) {
             if (e.getErrorCode() != 48) { // Resource already exists
                 throw e;
+            } else {
+                LOG.info(DBValues.ROUTE_COLLECTION_NAME + " already existing, not recreating");
             }
         }
 
-
-
-                /*.subscribe(new Subscriber<Success>() {
-            @Override
-            public void onSubscribe(Subscription subscription) {
-                subscription.request(1);
+        // Endpoint db
+        try {
+            db.createCollection(DBValues.ENDPOINT_COLLECTION_NAME);
+        } catch (MongoCommandException e) {
+            if (e.getErrorCode() != 48) { // Resource already exists
+                throw e;
+            } else {
+                LOG.info(DBValues.ENDPOINT_COLLECTION_NAME + " already existing, not recreating");
             }
-
-            @Override
-            public void onNext(Success success) {
-                LOG.info("Collection " + DBValues.COLLECTION_NAME + " set up");
-                syncOP.complete(null);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                LOG.error("Impossible to create collection - already existing?");
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });*/
+        }
     }
 }

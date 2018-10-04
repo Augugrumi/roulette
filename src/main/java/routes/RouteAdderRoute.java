@@ -21,7 +21,7 @@ public class RouteAdderRoute implements Route {
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
 
 
         MongoDatabase db = ConfigManager.getConfig().getDatabase();
@@ -30,7 +30,7 @@ public class RouteAdderRoute implements Route {
         try {
             body = new JSONObject(request.body());
             final JSONArray addressList = body.getJSONArray(ParamsName.SI);
-            final MongoCollection<Document> collection = db.getCollection(DBValues.COLLECTION_NAME);
+            final MongoCollection<Document> collection = db.getCollection(DBValues.ROUTE_COLLECTION_NAME);
             final String SPId = request.params(ParamsName.SPI);
 
             if (collection.find(new RouteEntry().addSPI(SPId).build()).first() == null) {

@@ -23,7 +23,7 @@ public class RouteUpdaterRoute implements Route {
     public Object handle(Request request, Response response) throws Exception {
         LOG.debug("Update route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
+        final MongoCollection<Document> routes = db.getCollection(DBValues.ROUTE_COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
         final JSONObject body = new JSONObject(request.body());
         final JSONArray addressList = body.getJSONArray(ParamsName.SI);

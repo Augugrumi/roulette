@@ -24,7 +24,7 @@ public class VnfNameGetterRoute  implements Route {
 
         LOG.debug("Get vnf name called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
+        final MongoCollection<Document> routes = db.getCollection(DBValues.ROUTE_COLLECTION_NAME);
         final String SPId = request.params(ParamsName.SPI);
         final String serviceIndex = request.params(ParamsName.SI);
         ResponseCreator res;

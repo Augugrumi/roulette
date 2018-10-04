@@ -39,6 +39,7 @@ public class Main {
 
             DynamicAPILoader apiLoader = new DynamicAPILoader(ConfigManager.getConfig().getAPIConfig());
             apiLoader.load();
+
             LOG.info("Route successfully set");
         } catch (IOException e) {
             LOG.error("The Application could not load a valid API configuration");
