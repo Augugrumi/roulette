@@ -44,5 +44,10 @@
     "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipIngress/:socketIdIngress",
     "type": "put",
     "function": "routes.EndpointEgressUpdateRoute"
+  },
+  {
+    "name": "/endpoints/:_id",
+    "type": "get",
+    "function": "routes.EndpointGetRoute"
   }
 ]

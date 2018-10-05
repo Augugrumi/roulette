@@ -1,7 +1,10 @@
 package database.entrybuilders;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
+
+import static routes.util.ParamsName.MONGO_ID;
 
 public abstract class AbsEntryBuilder implements Cloneable {
 
@@ -16,6 +19,11 @@ public abstract class AbsEntryBuilder implements Cloneable {
     public AbsEntryBuilder addMetadata(JSONObject json) {
 
         entry.append(METADATA, json);
+        return this;
+    }
+
+    public AbsEntryBuilder addId(ObjectId id) {
+        entry.put(MONGO_ID, id);
         return this;
     }
 

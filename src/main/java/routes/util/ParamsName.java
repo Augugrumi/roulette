@@ -2,6 +2,8 @@ package routes.util;
 
 public interface ParamsName {
 
+    String MONGO_ID = "_id";
+
     interface Route {
 
         String SPI="spi";

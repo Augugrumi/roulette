@@ -15,6 +15,7 @@ import util.ConfigManager;
 
 import static database.DBValues.ENDPOINT_COLLECTION_NAME;
 import static routes.util.ParamsName.Endpoint.*;
+import static routes.util.ParamsName.MONGO_ID;
 
 public class EndpointPutRoute implements Route {
 
@@ -58,10 +59,10 @@ public class EndpointPutRoute implements Route {
             if (oldDoc == null) {
 
                 endpoints.insertOne(toAdd.build());
-                objectId = toAdd.build().getObjectId("_id").toHexString();
+                objectId = toAdd.build().getObjectId(MONGO_ID).toHexString();
             } else {
                 endpoints.replaceOne(toAdd.build(), oldDoc);
-                objectId = oldDoc.getObjectId("_id").toHexString();
+                objectId = oldDoc.getObjectId(MONGO_ID).toHexString();
             }
 
         } catch (JSONException e) {
