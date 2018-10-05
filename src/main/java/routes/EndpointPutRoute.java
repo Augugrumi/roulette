@@ -2,7 +2,6 @@ package routes;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import database.DBValues;
 import database.entrybuilders.EndpointEntry;
 import org.bson.Document;
 import org.json.JSONException;
@@ -14,26 +13,20 @@ import spark.Response;
 import spark.Route;
 import util.ConfigManager;
 
+import static database.DBValues.ENDPOINT_COLLECTION_NAME;
+import static routes.util.ParamsName.Endpoint.*;
+
 public class EndpointPutRoute implements Route {
 
-    final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(EndpointPutRoute.class);
-    final private static String INGRESS_IP = "ipIngress";
-    final private static String EGRESS_IP = "ipEgress";
-    final private static String SRC_IP = "ipSrc";
-    final private static String DEST_IP = "ipDst";
-    final private static String SRC_PORT = "portSrc";
-    final private static String DEST_PORT = "portDst";
-    final private static String SFC_ID = "idSfc"; // TODO perform a join when creating the object to check sfc existence
-    final private static String SOCKET_ID_INGRESS = "socketIdIngress";
-    final private static String SOCKET_ID_EGRESS = "socketIdEgress";
-    final private static String PROTOCOL = "protocol";
+    final public static Logger LOG = ConfigManager.getConfig().getApplicationLogger(EndpointPutRoute.class);
 
+    // TODO perform a join when creating the object to check sfc existence
     @Override
     public Object handle(Request request, Response response) {
 
         LOG.debug("Launching " + this.getClass().getName());
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> endpoints = db.getCollection(DBValues.ENDPOINT_COLLECTION_NAME);
+        final MongoCollection<Document> endpoints = db.getCollection(ENDPOINT_COLLECTION_NAME);
         final JSONObject body = new JSONObject(request.body());
         final EndpointEntry toAdd = new EndpointEntry();
 
@@ -47,13 +40,15 @@ public class EndpointPutRoute implements Route {
                     .setSfcId(body.getString(SFC_ID))
                     .setProtocol(body.getString(PROTOCOL));
 
-            final String ingressIP = body.getString(INGRESS_IP);
-            if (ingressIP == null | ingressIP.equals("")) {
+            final String ingressIP = body.optString(INGRESS_IP, null);
+            if (ingressIP == null || ingressIP.equals("")) {
+                // Ingress is null, so the request it's coming from an Egress endpoint
                 final String egressIP = body.getString(EGRESS_IP);
                 final String egressSocketId = body.getString(SOCKET_ID_EGRESS);
                 toAdd.setEgressIP(egressIP)
                         .setSocketIdEgress(egressSocketId);
             } else {
+                // Ingress is set, so the request it's coming from an Ingress endpoint
                 final String ingressSocketId = body.getString(SOCKET_ID_INGRESS);
                 toAdd.setIngressIP(ingressIP)
                         .setSocketIdIngress(ingressSocketId);

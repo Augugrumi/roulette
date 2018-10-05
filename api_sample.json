@@ -30,9 +30,19 @@
     "function": "routes.RouteUpdaterRoute"
   },
   {
-    "name": "/endpoints",
+    "name": "/endpoints/",
     "type": "put",
     "function": "routes.EndpointPutRoute"
 
+  },
+  {
+    "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipEgress/:socketIdEgress",
+    "type": "put",
+    "function": "routes.EndpointIngressUpdateRoute"
+  },
+  {
+    "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipIngress/:socketIdIngress",
+    "type": "put",
+    "function": "routes.EndpointEgressUpdateRoute"
   }
 ]

@@ -3,7 +3,7 @@ package database.entrybuilders;
 import org.bson.Document;
 import org.json.JSONObject;
 
-public abstract class AbsEntryBuilder {
+public abstract class AbsEntryBuilder implements Cloneable {
 
     final static String METADATA = "metadata";
 
@@ -21,5 +21,18 @@ public abstract class AbsEntryBuilder {
 
     public Document build() {
         return entry;
-    };
+    }
+
+    @Override
+    public String toString() {
+        return entry.toString();
+    }
+
+    @Override
+    public AbsEntryBuilder clone() throws CloneNotSupportedException {
+        AbsEntryBuilder clone = (AbsEntryBuilder)super.clone();
+        clone.entry = new Document(entry);
+
+        return clone;
+    }
 }

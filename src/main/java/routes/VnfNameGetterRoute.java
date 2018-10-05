@@ -2,18 +2,21 @@ package routes;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import database.DBValues;
 import database.entrybuilders.RouteEntry;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import routes.util.ParamsName;
 import routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 import util.ConfigManager;
+
+import static database.DBValues.ROUTE_COLLECTION_NAME;
+import static routes.util.ParamsName.Route.SI;
+import static routes.util.ParamsName.Route.SPI;
+
 
 public class VnfNameGetterRoute  implements Route {
 
@@ -24,15 +27,15 @@ public class VnfNameGetterRoute  implements Route {
 
         LOG.debug("Get vnf name called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> routes = db.getCollection(DBValues.ROUTE_COLLECTION_NAME);
-        final String SPId = request.params(ParamsName.SPI);
-        final String serviceIndex = request.params(ParamsName.SI);
+        final MongoCollection<Document> routes = db.getCollection(ROUTE_COLLECTION_NAME);
+        final String SPId = request.params(SPI);
+        final String serviceIndex = request.params(SI);
         ResponseCreator res;
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
         if (route != null) {
-            LOG.debug(route.getString("si"));
-            JSONArray vnfNames = new JSONArray(route.getString("si"));
+            LOG.debug(route.getString(SI));
+            JSONArray vnfNames = new JSONArray(route.getString(SI));
             JSONObject name;
             try {
                 name = (JSONObject)(vnfNames.get(Integer.parseInt(serviceIndex)));
