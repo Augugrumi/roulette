@@ -42,7 +42,8 @@ public class Main {
 
             LOG.info("Route successfully set");
         } catch (IOException e) {
-            LOG.error("The Application could not load a valid API configuration");
+            LOG.error("The Application could not load a valid API configuration in "
+                    + ConfigManager.getConfig().getAPIConfig());
             e.printStackTrace();
             System.exit(1);
         } catch (NullPointerException e) {
