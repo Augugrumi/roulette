@@ -49,5 +49,10 @@
     "name": "/endpoints/:_id",
     "type": "get",
     "function": "routes.EndpointGetRoute"
+  },
+  {
+    "name": "/endpoints/:_id",
+    "type": "delete",
+    "function": "routes.EndpointDeleteRoute"
   }
 ]
