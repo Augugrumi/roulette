@@ -3,56 +3,5 @@
     "name": "/hello",
     "type": "get",
     "function": "routes.HelloWorldRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "post",
-    "function": "routes.RouteAdderRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "get",
-    "function": "routes.RouteGetterRoute"
-  },
-  {
-    "name": "/route/:spi/:si",
-    "type": "get",
-    "function": "routes.VnfNameGetterRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "delete",
-    "function": "routes.RouteDeleterRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "put",
-    "function": "routes.RouteUpdaterRoute"
-  },
-  {
-    "name": "/endpoints/",
-    "type": "put",
-    "function": "routes.EndpointPutRoute"
-
-  },
-  {
-    "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipEgress/:socketIdEgress",
-    "type": "put",
-    "function": "routes.EndpointIngressUpdateRoute"
-  },
-  {
-    "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipIngress/:socketIdIngress",
-    "type": "put",
-    "function": "routes.EndpointEgressUpdateRoute"
-  },
-  {
-    "name": "/endpoints/:_id",
-    "type": "get",
-    "function": "routes.EndpointGetRoute"
-  },
-  {
-    "name": "/endpoints/:_id",
-    "type": "delete",
-    "function": "routes.EndpointDeleteRoute"
   }
 ]

@@ -79,3 +79,4 @@ target
 *.log.lck
 
 *.iml
+api.json
