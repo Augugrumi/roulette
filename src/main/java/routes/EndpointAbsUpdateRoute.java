@@ -18,8 +18,6 @@ import static routes.util.ParamsName.Endpoint.SOCKET_ID_EGRESS;
 public abstract class EndpointAbsUpdateRoute implements Route {
 
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(EndpointAbsUpdateRoute.class);
-    final protected static String GENERIC_SOCKET_ID = "socketId";
-    final protected static String GENERIC_PROXY_IP = "proxyIp";
 
     final protected MongoDatabase db = ConfigManager.getConfig().getDatabase();
     final protected MongoCollection<Document> endpoints = db.getCollection(ENDPOINT_COLLECTION_NAME);
