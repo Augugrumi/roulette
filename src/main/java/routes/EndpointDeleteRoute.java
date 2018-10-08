@@ -28,7 +28,7 @@ public class EndpointDeleteRoute implements Route {
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> endpoints = db.getCollection(ENDPOINT_COLLECTION_NAME);
 
-        endpoints.deleteOne(new EndpointEntry().addId(new ObjectId(request.params(MONGO_ID))).build());
+        endpoints.deleteOne(new EndpointEntry().setId(new ObjectId(request.params(MONGO_ID))).build());
 
         return new ResponseCreator(ResponseCreator.ResponseType.OK);
     }

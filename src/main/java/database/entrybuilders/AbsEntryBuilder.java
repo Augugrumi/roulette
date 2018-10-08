@@ -16,13 +16,13 @@ public abstract class AbsEntryBuilder implements Cloneable {
         entry = new Document();
     }
 
-    public AbsEntryBuilder addMetadata(JSONObject json) {
+    public AbsEntryBuilder setMetadata(JSONObject json) {
 
         entry.append(METADATA, json);
         return this;
     }
 
-    public AbsEntryBuilder addId(ObjectId id) {
+    public AbsEntryBuilder setId(ObjectId id) {
         entry.put(MONGO_ID, id);
         return this;
     }

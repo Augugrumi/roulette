@@ -20,7 +20,7 @@ public class EndpointGetRoute implements Route {
 
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
         final MongoCollection<Document> endpoints = db.getCollection(ENDPOINT_COLLECTION_NAME);
-        final EndpointEntry query = (EndpointEntry)new EndpointEntry().addId(new ObjectId(request.params(MONGO_ID)));
+        final EndpointEntry query = (EndpointEntry)new EndpointEntry().setId(new ObjectId(request.params(MONGO_ID)));
         final Document queryRes = endpoints.find(query.build()).first();
 
         if (queryRes != null) {
