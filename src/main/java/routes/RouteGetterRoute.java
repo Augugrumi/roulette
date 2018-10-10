@@ -4,6 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import database.entrybuilders.RouteEntry;
 import org.bson.Document;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import routes.util.ResponseCreator;
 import spark.Request;
@@ -34,7 +35,7 @@ public class RouteGetterRoute implements Route {
             LOG.debug("Hit");
 
             res = new ResponseCreator(ResponseCreator.ResponseType.OK);
-            res.add(ResponseCreator.Fields.CONTENT, route.toJson());
+            res.add(ResponseCreator.Fields.CONTENT, new JSONObject(route.toJson()));
         } else {
             LOG.debug("Miss");
 
