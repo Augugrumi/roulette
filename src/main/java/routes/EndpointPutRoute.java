@@ -25,14 +25,16 @@ public class EndpointPutRoute implements Route {
     @Override
     public Object handle(Request request, Response response) {
 
-        LOG.debug("Launching " + this.getClass().getName());
-        final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> endpoints = db.getCollection(ENDPOINT_COLLECTION_NAME);
-        final JSONObject body = new JSONObject(request.body());
-        final EndpointEntry toAdd = new EndpointEntry();
 
-        String objectId = null;
         try {
+            LOG.debug("Launching " + this.getClass().getName());
+            final MongoDatabase db = ConfigManager.getConfig().getDatabase();
+            final MongoCollection<Document> endpoints = db.getCollection(ENDPOINT_COLLECTION_NAME);
+            LOG.debug("Data received:\n" + request.body());
+            final JSONObject body = new JSONObject(request.body());
+            final EndpointEntry toAdd = new EndpointEntry();
+
+            String objectId = null;
 
             toAdd.setDestIP(body.getString(DEST_IP))
                     .setDestPort(body.getInt(DEST_PORT))
@@ -65,16 +67,16 @@ public class EndpointPutRoute implements Route {
                 objectId = oldDoc.getObjectId(MONGO_ID).toHexString();
             }
 
+            final ResponseCreator res = new ResponseCreator(ResponseCreator.ResponseType.OK);
+            final JSONObject id = new JSONObject();
+            id.put("id", objectId);
+            res.add(ResponseCreator.Fields.CONTENT, id);
+            return res;
+
         } catch (JSONException e) {
             final ResponseCreator res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
             res.add(ResponseCreator.Fields.REASON, e.getMessage());
             return res;
         }
-
-        final ResponseCreator res = new ResponseCreator(ResponseCreator.ResponseType.OK);
-        final JSONObject id = new JSONObject();
-        id.put("id", objectId);
-        res.add(ResponseCreator.Fields.CONTENT, id);
-        return res;
     }
 }
