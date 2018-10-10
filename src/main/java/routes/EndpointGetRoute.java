@@ -5,6 +5,7 @@ import com.mongodb.client.MongoDatabase;
 import database.entrybuilders.EndpointEntry;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONObject;
 import routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
@@ -25,7 +26,7 @@ public class EndpointGetRoute implements Route {
 
         if (queryRes != null) {
             ResponseCreator res = new ResponseCreator(ResponseCreator.ResponseType.OK);
-            res.add(ResponseCreator.Fields.CONTENT, queryRes.toJson());
+            res.add(ResponseCreator.Fields.CONTENT, new JSONObject(queryRes.toJson()));
 
             return res;
         } else {
