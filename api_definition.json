@@ -1,0 +1,52 @@
+[
+  {
+    "name": "/routes/:spi",
+    "type": "post",
+    "function": "org.augugrumi.roulette.routes.RouteAdderRoute"
+  },
+  {
+    "name": "/routes/:spi",
+    "type": "get",
+    "function": "org.augugrumi.roulette.routes.RouteGetterRoute"
+  },
+  {
+    "name": "/routes/:spi/:si",
+    "type": "get",
+    "function": "org.augugrumi.roulette.routes.VnfNameGetterRoute"
+  },
+  {
+    "name": "/routes/:spi",
+    "type": "delete",
+    "function": "org.augugrumi.roulette.routes.RouteDeleterRoute"
+  },
+  {
+    "name": "/routes/:spi",
+    "type": "put",
+    "function": "org.augugrumi.roulette.routes.RouteUpdaterRoute"
+  },
+  {
+    "name": "/endpoints/",
+    "type": "put",
+    "function": "org.augugrumi.roulette.routes.EndpointPutRoute"
+  },
+  {
+    "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipEgress/:socketIdEgress",
+    "type": "put",
+    "function": "org.augugrumi.roulette.routes.EndpointIngressUpdateRoute"
+  },
+  {
+    "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipIngress/:socketIdIngress",
+    "type": "put",
+    "function": "org.augugrumi.roulette.routes.EndpointEgressUpdateRoute"
+  },
+  {
+    "name": "/endpoints/:_id",
+    "type": "get",
+    "function": "org.augugrumi.roulette.routes.EndpointGetRoute"
+  },
+  {
+    "name": "/endpoints/:_id",
+    "type": "delete",
+    "function": "org.augugrumi.roulette.routes.EndpointDeleteRoute"
+  }
+]

@@ -29,6 +29,6 @@ services:
       ROULETTE_DATABASE_IP: mongo
       ROULETTE_DATABASE_USERNAME: test
       ROULETTE_DATABASE_PASSWORD: a123
-      ROULETTE_API_CONFIG: /config/api.json
+      ROULETTE_API_CONFIG: /config/api_definition.json
     volumes:
       - ./:/config/ # Put your configuration files here! (eg the JSON api)
