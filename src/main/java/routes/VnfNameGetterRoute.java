@@ -34,7 +34,6 @@ public class VnfNameGetterRoute  implements Route {
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
         if (route != null) {
-            LOG.debug(route.getString(SI));
             JSONArray vnfNames = new JSONArray(route.getString(SI));
             JSONObject name;
             try {
