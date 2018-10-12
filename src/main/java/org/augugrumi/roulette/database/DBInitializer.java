@@ -1,9 +1,9 @@
-package database;
+package org.augugrumi.roulette.database;
 
 import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoDatabase;
 import org.slf4j.Logger;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ConfigManager;
 
 public class DBInitializer {
 

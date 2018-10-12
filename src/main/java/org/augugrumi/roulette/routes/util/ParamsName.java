@@ -1,4 +1,4 @@
-package routes.util;
+package org.augugrumi.roulette.routes.util;
 
 public interface ParamsName {
 

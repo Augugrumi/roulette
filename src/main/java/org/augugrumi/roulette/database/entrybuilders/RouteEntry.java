@@ -1,9 +1,9 @@
-package database.entrybuilders;
+package org.augugrumi.roulette.database.entrybuilders;
 
 import org.json.JSONArray;
 
-import static routes.util.ParamsName.Route.SI;
-import static routes.util.ParamsName.Route.SPI;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SI;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SPI;
 
 public class RouteEntry extends AbsEntryBuilder {
 

@@ -1,6 +1,6 @@
-package database.entrybuilders;
+package org.augugrumi.roulette.database.entrybuilders;
 
-import static routes.util.ParamsName.Endpoint.*;
+import static org.augugrumi.roulette.routes.util.ParamsName.Endpoint.*;
 
 public class EndpointEntry extends AbsEntryBuilder {
 

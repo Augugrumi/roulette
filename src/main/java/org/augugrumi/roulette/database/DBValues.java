@@ -1,4 +1,4 @@
-package database;
+package org.augugrumi.roulette.database;
 
 public interface DBValues {
 

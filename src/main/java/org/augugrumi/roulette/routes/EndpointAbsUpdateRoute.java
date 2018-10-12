@@ -1,19 +1,19 @@
-package routes;
+package org.augugrumi.roulette.routes;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import database.entrybuilders.EndpointEntry;
+import org.augugrumi.roulette.database.entrybuilders.EndpointEntry;
 import org.bson.Document;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import routes.util.ResponseCreator;
+import org.augugrumi.roulette.routes.util.ResponseCreator;
 import spark.Route;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ConfigManager;
 
-import static database.DBValues.ENDPOINT_COLLECTION_NAME;
-import static routes.util.ParamsName.Endpoint.EGRESS_IP;
-import static routes.util.ParamsName.Endpoint.SOCKET_ID_EGRESS;
+import static org.augugrumi.roulette.database.DBValues.ENDPOINT_COLLECTION_NAME;
+import static org.augugrumi.roulette.routes.util.ParamsName.Endpoint.EGRESS_IP;
+import static org.augugrumi.roulette.routes.util.ParamsName.Endpoint.SOCKET_ID_EGRESS;
 
 public abstract class EndpointAbsUpdateRoute implements Route {
 

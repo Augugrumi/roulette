@@ -1,22 +1,22 @@
-package routes;
+package org.augugrumi.roulette.routes;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import database.entrybuilders.RouteEntry;
+import org.augugrumi.roulette.database.entrybuilders.RouteEntry;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import routes.util.ResponseCreator;
+import org.augugrumi.roulette.routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ConfigManager;
 
-import static database.DBValues.ROUTE_COLLECTION_NAME;
-import static routes.util.ParamsName.Route.SI;
-import static routes.util.ParamsName.Route.SPI;
+import static org.augugrumi.roulette.database.DBValues.ROUTE_COLLECTION_NAME;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SI;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SPI;
 
 public class RouteAdderRoute implements Route {
 

@@ -1,4 +1,4 @@
-package routes;
+package org.augugrumi.roulette.routes;
 
 import spark.Request;
 import spark.Response;

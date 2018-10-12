@@ -1,8 +1,11 @@
-import database.DBInitializer;
+package org.augugrumi.roulette;
+
+import org.augugrumi.dynamicapiloader.DynamicAPILoader;
+import org.augugrumi.roulette.database.DBInitializer;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
-import util.ArgParser;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ArgParser;
+import org.augugrumi.roulette.util.ConfigManager;
 
 import java.io.IOException;
 

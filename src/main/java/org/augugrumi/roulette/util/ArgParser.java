@@ -1,4 +1,4 @@
-package util;
+package org.augugrumi.roulette.util;
 
 import org.apache.commons.cli.*;
 import org.json.JSONException;
@@ -73,7 +73,7 @@ public class ArgParser {
                 throw new ParseException("Error while reading the database JSON config file");
             } catch (JSONException e) {
                 e.printStackTrace();
-                throw new ParseException("Failure parsing the database JSON config file: not a valid JSON");
+                throw new ParseException("Failure parsing the org.augugrumi.roulette.database JSON config file: not a valid JSON");
             }
         }
     }

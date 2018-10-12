@@ -1,10 +1,10 @@
-package database.entrybuilders;
+package org.augugrumi.roulette.database.entrybuilders;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
-import static routes.util.ParamsName.MONGO_ID;
+import static org.augugrumi.roulette.routes.util.ParamsName.MONGO_ID;
 
 public abstract class AbsEntryBuilder implements Cloneable {
 

@@ -1,9 +1,9 @@
-package routes.util;
+package org.augugrumi.roulette.routes.util;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import routes.util.exceptions.ResponseCreatorException;
-import util.ConfigManager;
+import org.augugrumi.roulette.routes.util.exceptions.ResponseCreatorException;
+import org.augugrumi.roulette.util.ConfigManager;
 
 import java.util.Map;
 

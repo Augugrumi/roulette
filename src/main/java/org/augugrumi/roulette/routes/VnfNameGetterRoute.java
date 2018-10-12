@@ -1,21 +1,24 @@
-package routes;
+package org.augugrumi.roulette.routes;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import database.entrybuilders.RouteEntry;
+import org.augugrumi.roulette.database.entrybuilders.RouteEntry;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import routes.util.ResponseCreator;
+import org.augugrumi.roulette.routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ConfigManager;
 
-import static database.DBValues.ROUTE_COLLECTION_NAME;
-import static routes.util.ParamsName.Route.SI;
-import static routes.util.ParamsName.Route.SPI;
+import java.util.ArrayList;
+
+import static org.augugrumi.roulette.database.DBValues.ROUTE_COLLECTION_NAME;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SI;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SPI;
 
 
 public class VnfNameGetterRoute  implements Route {
@@ -34,21 +37,24 @@ public class VnfNameGetterRoute  implements Route {
 
         Document route = routes.find(new RouteEntry().addSPI(SPId).build()).first();
         if (route != null) {
-            LOG.debug(route.getString(SI));
-            JSONArray vnfNames = new JSONArray(route.getString(SI));
-            JSONObject name;
             try {
-                name = (JSONObject)(vnfNames.get(Integer.parseInt(serviceIndex)));
-                LOG.debug("Hit");
-                res = new ResponseCreator(ResponseCreator.ResponseType.OK);
-                res.add(ResponseCreator.Fields.CONTENT, name);
-            } catch (Exception e) {
-                LOG.debug("Index miss");
+                JSONArray vnfNames = new JSONArray(route.get(SI, ArrayList.class));
+                JSONObject name;
+                try {
+                    name = (JSONObject)(vnfNames.get(Integer.parseInt(serviceIndex)));
+                    LOG.debug("Hit");
+                    res = new ResponseCreator(ResponseCreator.ResponseType.OK);
+                    res.add(ResponseCreator.Fields.CONTENT, name);
+                } catch (Exception e) {
+                    LOG.debug("Index miss");
 
+                    res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
+                    res.add(ResponseCreator.Fields.REASON, "Index " + serviceIndex + " not found on route " + SPId);
+                }
+            } catch (JSONException e) {
                 res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
-                res.add(ResponseCreator.Fields.REASON, "Index " + serviceIndex + " not found on route " + SPId);
+                res.add(ResponseCreator.Fields.REASON, e.getMessage());
             }
-
         } else {
             LOG.debug("Route miss");
 

@@ -1,4 +1,4 @@
-package util;
+package org.augugrumi.roulette.util;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
