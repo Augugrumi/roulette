@@ -30,14 +30,14 @@
     "function": "org.augugrumi.roulette.routes.EndpointPutRoute"
   },
   {
-    "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipEgress/:socketIdEgress",
-    "type": "put",
-    "function": "org.augugrumi.roulette.routes.EndpointIngressUpdateRoute"
-  },
-  {
-    "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol/:ipIngress/:socketIdIngress",
+    "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
     "type": "put",
     "function": "org.augugrumi.roulette.routes.EndpointEgressUpdateRoute"
+  },
+  {
+    "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
+    "type": "put",
+    "function": "org.augugrumi.roulette.routes.EndpointIngressUpdateRoute"
   },
   {
     "name": "/endpoints/:_id",

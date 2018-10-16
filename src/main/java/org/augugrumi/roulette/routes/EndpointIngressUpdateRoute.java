@@ -23,8 +23,8 @@ public class EndpointIngressUpdateRoute extends EndpointAbsUpdateRoute {
         final JSONObject body = new JSONObject(request.body());
         final EndpointEntry data = new EndpointEntry()
                 .setProtocol(request.params(PROTOCOL))
-                .setSocketIdEgress(request.params(SOCKET_ID_EGRESS))
-                .setEgressIP(request.params(EGRESS_IP))
+                //.setSocketIdEgress(request.params(SOCKET_ID_EGRESS))
+                //.setEgressIP(request.params(EGRESS_IP))
                 .setSrcIP(request.params(SRC_IP))
                 .setDestIP(request.params(DEST_IP))
                 .setSrcPort(Integer.parseInt(request.params(SRC_PORT)))
@@ -40,7 +40,11 @@ public class EndpointIngressUpdateRoute extends EndpointAbsUpdateRoute {
         if (stringCheckRes != null) {
             return stringCheckRes;
         }
-        return checkAndUpdate(queryResult, data, body, toUpdate -> toUpdate.setIngressIP(body.getString(INGRESS_IP))
-                .setSocketIdIngress(body.getString(SOCKET_ID_INGRESS))).getRes();
+        return checkAndUpdate(queryResult, data, body, toUpdate ->
+                toUpdate.setEgressIP(queryResult.getString(EGRESS_IP))
+                        .setSocketIdEgress(queryResult.getString(SOCKET_ID_EGRESS))
+                        .setIngressIP(body.getString(INGRESS_IP))
+                        .setSocketIdIngress(body.getString(SOCKET_ID_INGRESS)))
+                        .getRes();
     }
 }
