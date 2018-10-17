@@ -4,12 +4,18 @@ public interface ParamsName {
 
     String MONGO_ID = "_id";
 
+    interface Configuration {
+        String DEFAULT_INGRESS = "defaultIngress";
+        String DEFAULT_EGRESS = "defaultEgress";
+    }
+
     interface Route {
 
         String SPI="spi";
         String SI="si";
 
     }
+
     interface Endpoint {
 
         String INGRESS_IP = "ipIngress";

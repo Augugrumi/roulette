@@ -1,5 +1,15 @@
 [
   {
+    "name": "/configuration/ingress",
+    "type": "put",
+    "function": "org.augugrumi.roulette.routes.DefaultIngressPutRoute"
+  },
+  {
+    "name": "/configuration/egress",
+    "type": "put",
+    "function": "org.augugrumi.roulette.routes.DefaultEgressPutRoute"
+  },
+  {
     "name": "/routes/:spi",
     "type": "post",
     "function": "org.augugrumi.roulette.routes.RouteAdderRoute"
@@ -38,6 +48,16 @@
     "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
     "type": "put",
     "function": "org.augugrumi.roulette.routes.EndpointIngressUpdateRoute"
+  },
+  {
+    "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
+    "type": "get",
+    "function": "org.augugrumi.roulette.routes.EndpointIngressGetRoute"
+  },
+  {
+    "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
+    "type": "get",
+    "function": "org.augugrumi.roulette.routes.EndpointEgressGetRoute"
   },
   {
     "name": "/endpoints/:_id",
