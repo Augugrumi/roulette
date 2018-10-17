@@ -85,7 +85,7 @@ public abstract class EndpointAbsUpdateRoute implements Route {
         } else {
             return new UpdateResult(
                     new ResponseCreator(ResponseCreator.ResponseType.ERROR)
-                            .add(ResponseCreator.Fields.REASON, "Cannot found document to update"),
+                            .add(ResponseCreator.Fields.REASON, "Cannot find document to update"),
                     false
 
             );
