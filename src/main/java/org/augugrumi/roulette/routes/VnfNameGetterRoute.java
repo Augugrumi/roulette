@@ -50,6 +50,10 @@ public class VnfNameGetterRoute  implements Route {
 
                     res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
                     res.add(ResponseCreator.Fields.REASON, "Index " + serviceIndex + " not found on route " + SPId);
+                    if (Integer.parseInt(serviceIndex) == vnfNames.length())
+                        res.add(ResponseCreator.Fields.ERRORCODE, -1);
+                    else
+                        res.add(ResponseCreator.Fields.ERRORCODE, -2);
                 }
             } catch (JSONException e) {
                 res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
