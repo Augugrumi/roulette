@@ -4,19 +4,6 @@ import static org.augugrumi.roulette.routes.util.ParamsName.Endpoint.*;
 
 public class EndpointEntry extends AbsEntryBuilder {
 
-    /*final private static String INGRESS_IP = "ipIngress";
-    final private static String EGRESS_IP = "ipEgress";
-    final private static String SRC_IP = "ipSrc";
-    final private static String DEST_IP = "ipDst";
-    final private static String SRC_PORT = "portSrc";
-    final private static String DEST_PORT = "portDst";
-    final private static String SFC_ID = "idSfc";
-    final private static String SOCKET_ID_INGRESS = "socketIdIngress";
-    final private static String SOCKET_ID_EGRESS = "socketIdEgress";
-    final private static String PROTOCOL = "protocol";*/
-
-    //final private JSONObject entry;
-
     public EndpointEntry() {
         super();
 
