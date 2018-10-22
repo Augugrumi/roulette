@@ -3,30 +3,5 @@
     "name": "/hello",
     "type": "get",
     "function": "routes.HelloWorldRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "post",
-    "function": "routes.RouteAdderRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "get",
-    "function": "routes.RouteGetterRoute"
-  },
-  {
-    "name": "/route/:spi/:si",
-    "type": "get",
-    "function": "routes.VnfNameGetterRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "delete",
-    "function": "routes.RouteDeleterRoute"
-  },
-  {
-    "name": "/route/:spi",
-    "type": "put",
-    "function": "routes.RouteUpdaterRoute"
   }
 ]

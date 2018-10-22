@@ -1,27 +1,29 @@
-package routes;
+package org.augugrumi.roulette.routes;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import database.DBValues;
-import database.entrybuilders.RouteEntry;
+import org.augugrumi.roulette.database.entrybuilders.RouteEntry;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import routes.util.ParamsName;
-import routes.util.ResponseCreator;
+import org.augugrumi.roulette.routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ConfigManager;
+
+import static org.augugrumi.roulette.database.DBValues.ROUTE_COLLECTION_NAME;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SI;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SPI;
 
 public class RouteAdderRoute implements Route {
 
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
 
 
         MongoDatabase db = ConfigManager.getConfig().getDatabase();
@@ -29,16 +31,16 @@ public class RouteAdderRoute implements Route {
 
         try {
             body = new JSONObject(request.body());
-            final JSONArray addressList = body.getJSONArray(ParamsName.SI);
-            final MongoCollection<Document> collection = db.getCollection(DBValues.COLLECTION_NAME);
-            final String SPId = request.params(ParamsName.SPI);
+            final JSONArray addressList = body.getJSONArray(SI);
+            final MongoCollection<Document> collection = db.getCollection(ROUTE_COLLECTION_NAME);
+            final String SPId = request.params(SPI);
 
             if (collection.find(new RouteEntry().addSPI(SPId).build()).first() == null) {
 
                 LOG.debug("Adding a new route to the SFC table with id" + SPId);
                 collection.insertOne(
                         new RouteEntry()
-                                .addSPI(request.params(ParamsName.SPI))
+                                .addSPI(request.params(SPI))
                                 .addSI(addressList)
                                 .build()
                 );

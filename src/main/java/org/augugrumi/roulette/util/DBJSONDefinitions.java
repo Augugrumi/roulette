@@ -1,4 +1,4 @@
-package util;
+package org.augugrumi.roulette.util;
 
 public interface DBJSONDefinitions {
 

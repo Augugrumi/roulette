@@ -1,4 +1,4 @@
-package util;
+package org.augugrumi.roulette.util;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
@@ -47,6 +47,9 @@ public class ConfigManager {
         final private String MONGO_DB_PROTOCOL = "mongodb://";
         final private String ROULETTE_DEFAULT_DB_NAME = "roulette_db";
         final public String ROULETTE_DEFAULT_ROUTE_COLLECTION_NAME = "route";
+        // TODO change default values
+        final private String DEFAULT_INGRESS = "localhost:8701";
+        final private String DEFAULT_EGRESS = "localhost:8704";
 
         // Init config keys
         final private String R_PORT = "ROULETTE_PORT";
@@ -57,6 +60,8 @@ public class ConfigManager {
         final private String R_DB_USERNAME = "ROULETTE_DATABASE_USERNAME";
         final private String R_DB_PASSWORD = "ROULETTE_DATABASE_PASSWORD";
         final private String R_DB_JSON = "ROULETTE_DATABASE_JSON_CONFIG";
+        final private String R_DEF_ING = "DEFAULT_INGRESS";
+        final private String R_DEF_EGR = "DEFAULT_EGRESS";
         // End config keys
 
         final private static Logger LOG = LoggerFactory.getLogger(Config.class);
@@ -69,6 +74,8 @@ public class ConfigManager {
         private String databaseName;
         private String databaseUsername;
         private String databasePassword;
+        private String defaultIngress;
+        private String defaultEgress;
 
         private Config() {
             LOG.debug("Environment variable " + R_PORT + " set to: " + System.getenv(R_PORT));
@@ -80,6 +87,18 @@ public class ConfigManager {
 
             LOG.debug("Environment variable " + R_API + " set to: " + System.getenv(R_API));
             this.APIConfigPath = System.getenv(R_API);
+
+            if (System.getenv(R_DEF_ING) != null) {
+                this.defaultIngress = System.getenv(R_DEF_ING);
+            } else {
+                this.defaultIngress = DEFAULT_INGRESS;
+            }
+
+            if (System.getenv(R_DEF_EGR) != null) {
+                this.defaultEgress = System.getenv(R_DEF_EGR);
+            } else {
+                this.defaultEgress = DEFAULT_EGRESS;
+            }
 
             if (System.getenv(R_DB_JSON) == null) {
                 if (System.getenv(R_DB_IP) != null) {
@@ -199,6 +218,14 @@ public class ConfigManager {
             return databaseName;
         }
 
+        public String getDefaultIngress() {
+            return defaultIngress;
+        }
+
+        public String getDefaultEgress() {
+            return defaultEgress;
+        }
+
         /**
          * Setter method to change port number
          * @param port a new port destination
@@ -237,6 +264,14 @@ public class ConfigManager {
 
         void setDBPassword(String password) {
             this.databasePassword = password;
+        }
+
+        public void setDefaultIngress(String defaultIngress) {
+            this.defaultIngress = defaultIngress;
+        }
+
+        public void setDefaultEgress(String defaultEgress) {
+            this.defaultEgress = defaultEgress;
         }
     }
 }

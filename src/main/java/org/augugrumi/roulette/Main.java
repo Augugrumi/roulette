@@ -1,8 +1,11 @@
-import database.DBInitializer;
+package org.augugrumi.roulette;
+
+import org.augugrumi.dynamicapiloader.DynamicAPILoader;
+import org.augugrumi.roulette.database.DBInitializer;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
-import util.ArgParser;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ArgParser;
+import org.augugrumi.roulette.util.ConfigManager;
 
 import java.io.IOException;
 
@@ -39,9 +42,11 @@ public class Main {
 
             DynamicAPILoader apiLoader = new DynamicAPILoader(ConfigManager.getConfig().getAPIConfig());
             apiLoader.load();
+
             LOG.info("Route successfully set");
         } catch (IOException e) {
-            LOG.error("The Application could not load a valid API configuration");
+            LOG.error("The Application could not load a valid API configuration in "
+                    + ConfigManager.getConfig().getAPIConfig());
             e.printStackTrace();
             System.exit(1);
         } catch (NullPointerException e) {

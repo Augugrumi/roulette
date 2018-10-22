@@ -1,31 +1,30 @@
-package routes;
+package org.augugrumi.roulette.routes;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import database.DBValues;
-import database.entrybuilders.RouteEntry;
+import org.augugrumi.roulette.database.entrybuilders.RouteEntry;
 import org.bson.Document;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
-import routes.util.ParamsName;
-import routes.util.ResponseCreator;
+import org.augugrumi.roulette.routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import util.ConfigManager;
+import org.augugrumi.roulette.util.ConfigManager;
+
+import static org.augugrumi.roulette.database.DBValues.ROUTE_COLLECTION_NAME;
+import static org.augugrumi.roulette.routes.util.ParamsName.Route.SPI;
+
 
 public class RouteDeleterRoute implements Route {
 
     final private static Logger LOG = ConfigManager.getConfig().getApplicationLogger(RouteAdderRoute.class);
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
+    public Object handle(Request request, Response response) {
         LOG.debug("Get route called");
         final MongoDatabase db = ConfigManager.getConfig().getDatabase();
-        final MongoCollection<Document> routes = db.getCollection(DBValues.COLLECTION_NAME);
-        final String SPId = request.params(ParamsName.SPI);
+        final MongoCollection<Document> routes = db.getCollection(ROUTE_COLLECTION_NAME);
+        final String SPId = request.params(SPI);
         ResponseCreator res;
 
         Document toRemove = routes.find(new RouteEntry().addSPI(SPId).build()).first();

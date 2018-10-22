@@ -1,4 +1,4 @@
-package routes.util.exceptions;
+package org.augugrumi.roulette.routes.util.exceptions;
 
 /**
  * Exception to indicate a problem with the creation of a Response
