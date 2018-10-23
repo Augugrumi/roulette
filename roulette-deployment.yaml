@@ -10,26 +10,26 @@ spec:
     targetPort: 27017
   clusterIP: None
   selector:
-    role: mongo
+    role: roulette-mongodb
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: mongo
+  name: roulette-mongodb
 spec:
-  serviceName: "mongo"
+  serviceName: "roulette-mongodb"
   updateStrategy:
     type: RollingUpdate
   replicas: 3
   template:
     metadata:
       labels:
-        role: "mongo"
+        role: "roulette-mongodb"
         environment: development
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-      - name: mongo
+      - name: roulette-mongodb
         image: mongo
         command:
         - mongod
@@ -49,9 +49,9 @@ spec:
         image: austbot/mongo-k8s-sidecar
         env:
         - name: KUBERNETES_MONGO_SERVICE_NAME
-          value: "mongo"
+          value: "roulette-mongodb"
         - name: MONGO_SIDECAR_POD_LABELS
-          value: "role=mongo,environment=development"
+          value: "role=roulette-mongodb,environment=development"
   volumeClaimTemplates:
   - metadata:
       name: mongo-persistent-storage
