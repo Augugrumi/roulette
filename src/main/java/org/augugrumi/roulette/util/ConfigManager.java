@@ -1,8 +1,8 @@
 package org.augugrumi.roulette.util;
 
-import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ReadPreference;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Singleton handling requests to the true configuration class
@@ -211,8 +212,13 @@ public class ConfigManager {
                 mongoClient = MongoClients.create(
                         MongoClientSettings
                                 .builder()
-                                .readPreference(ReadPreference.secondaryPreferred())
-                                .applyConnectionString(new ConnectionString(connection.toString()))
+                                .applyToClusterSettings(builder ->
+                                        builder.hosts(Arrays.asList(
+                                                new ServerAddress("mongo-0.mongo", 27017),
+                                                new ServerAddress("mongo-1.mongo", 27017),
+                                                new ServerAddress("mongo-2.mongo", 27017)))
+                                .build())
+                                .readPreference(ReadPreference.nearest())
                                 .build());
             }
             return mongoClient.getDatabase(databaseName);
