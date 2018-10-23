@@ -1,3 +1,152 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  labels:
+    name: mongo
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  clusterIP: None
+  selector:
+    role: mongo
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  serviceName: "mongo"
+  updateStrategy:
+    type: RollingUpdate
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        role: "mongo"
+        environment: development
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mongo
+        image: mongo
+        command:
+        - mongod
+        - "--replSet"
+        - rs0
+        - "--smallfiles"
+        - "--noprealloc"
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      - name: proposal-mongo-sidecar
+        image: austbot/mongo-k8s-sidecar
+        env:
+        - name: KUBERNETES_MONGO_SERVICE_NAME
+          value: "mongo"
+        - name: MONGO_SIDECAR_POD_LABELS
+          value: "role=mongo,environment=development"
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+      #annotations:
+      #  volume.beta.kubernetes.io/storage-class: aws-efs
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 8Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: roulette-config
+  namespace: default
+data:
+  api-diagram.json: |
+    [
+      {
+        "name": "/configuration/ingress",
+        "type": "put",
+        "function": "org.augugrumi.roulette.routes.DefaultIngressPutRoute"
+      },
+      {
+        "name": "/configuration/egress",
+        "type": "put",
+        "function": "org.augugrumi.roulette.routes.DefaultEgressPutRoute"
+      },
+      {
+        "name": "/routes/:spi",
+        "type": "post",
+        "function": "org.augugrumi.roulette.routes.RouteAdderRoute"
+      },
+      {
+        "name": "/routes/:spi",
+        "type": "get",
+        "function": "org.augugrumi.roulette.routes.RouteGetterRoute"
+      },
+      {
+        "name": "/routes/:spi/:si",
+        "type": "get",
+        "function": "org.augugrumi.roulette.routes.VnfNameGetterRoute"
+      },
+      {
+        "name": "/routes/:spi",
+        "type": "delete",
+        "function": "org.augugrumi.roulette.routes.RouteDeleterRoute"
+      },
+      {
+        "name": "/routes/:spi",
+        "type": "put",
+        "function": "org.augugrumi.roulette.routes.RouteUpdaterRoute"
+      },
+      {
+        "name": "/endpoints/",
+        "type": "put",
+        "function": "org.augugrumi.roulette.routes.EndpointPutRoute"
+      },
+      {
+        "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
+        "type": "put",
+        "function": "org.augugrumi.roulette.routes.EndpointEgressUpdateRoute"
+      },
+      {
+        "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
+        "type": "put",
+        "function": "org.augugrumi.roulette.routes.EndpointIngressUpdateRoute"
+      },
+      {
+        "name": "/endpoints/ingress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
+        "type": "get",
+        "function": "org.augugrumi.roulette.routes.EndpointIngressGetRoute"
+      },
+      {
+        "name": "/endpoints/egress/:ipSrc/:ipDst/:portSrc/:portDst/:idSfc/:protocol",
+        "type": "get",
+        "function": "org.augugrumi.roulette.routes.EndpointEgressGetRoute"
+      },
+      {
+        "name": "/endpoints/:_id",
+        "type": "get",
+        "function": "org.augugrumi.roulette.routes.EndpointGetRoute"
+      },
+      {
+        "name": "/endpoints/:_id",
+        "type": "delete",
+        "function": "org.augugrumi.roulette.routes.EndpointDeleteRoute"
+      }
+    ]
+  db-definition.json: |
+    {
+      "port": 27017,
+      "address": "roulette-mongodb",
+      "username": "augugrumi",
+      "password": "ubuntu"
+    }
+---
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
@@ -17,17 +166,24 @@ spec:
         name: roulette
     spec:
       containers:
-      - name: harbor
-        image: augugrumi/ruolette
+      - name: roulette
+        image: augugrumi/roulette
         imagePullPolicy: Always
         ports:
         - name: http
           containerPort: 80
+        volumeMounts:
+          - name: roulette-config
+            mountPath: /config
         env:
-        - name: ROULETTE_DATABASE_IP
-          value: /config/api-diagram.json
-        - name: ROULETTE_DATABASE_PORT
-          value: /config/api-diagram.json
+          - name: ROULETTE_API_CONFIG
+            value: /config/api-diagram.json
+          - name: ROULETTE_DATABASE_JSON_CONFIG
+            value: /config/db-definition.json
+      volumes:
+      - name: roulette-config
+        configMap:
+          name: roulette-config
 ---
 kind: Service
 apiVersion: v1
