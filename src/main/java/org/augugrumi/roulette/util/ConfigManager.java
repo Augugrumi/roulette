@@ -1,15 +1,19 @@
 package org.augugrumi.roulette.util;
 
-import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import org.apache.commons.validator.routines.InetAddressValidator;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Singleton handling requests to the true configuration class
@@ -152,20 +156,20 @@ public class ConfigManager {
 
         void readBJson(FileInputStream fis) throws IOException {
 
-                JSONObject databaseJson = new JSONObject(readFile(fis));
+            JSONObject databaseJson = new JSONObject(readFile(fis));
 
-                if (databaseJson.getInt(DBJSONDefinitions.PORT_FIELD) != 0) {
-                    this.databasePort = databaseJson.getInt(DBJSONDefinitions.PORT_FIELD);
-                }
-                if (databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD) != null) {
-                    this.databaseIP = databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD);
-                }
-                if (databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD) != null &&
-                        databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD) != null) {
-                    this.databaseUsername = databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD);
-                    this.databasePassword = databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD);
-                }
-                this.databaseName = ROULETTE_DEFAULT_DB_NAME;
+            if (databaseJson.getInt(DBJSONDefinitions.PORT_FIELD) != 0) {
+                this.databasePort = databaseJson.getInt(DBJSONDefinitions.PORT_FIELD);
+            }
+            if (databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD) != null) {
+                this.databaseIP = databaseJson.getString(DBJSONDefinitions.ADDRESS_FIELD);
+            }
+            if (databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD) != null &&
+                    databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD) != null) {
+                this.databaseUsername = databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD);
+                this.databasePassword = databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD);
+            }
+            this.databaseName = ROULETTE_DEFAULT_DB_NAME;
         }
 
         /**
@@ -196,17 +200,45 @@ public class ConfigManager {
 
         public synchronized MongoDatabase getDatabase () {
             if (mongoClient == null) {
-                // Create MongoDB connection
-                StringBuilder connection = new StringBuilder();
-                connection.append(MONGO_DB_PROTOCOL)
-                        .append(databaseUsername)
-                        .append(":")
-                        .append(databasePassword)
-                        .append("@")
-                        .append(databaseIP)
-                        .append(":")
-                        .append(databasePort);
-                mongoClient = MongoClients.create(new ConnectionString(connection.toString()));
+                try {
+                    List<InetAddress> res = new ArrayList<>();
+
+                    for (InetAddress toCheck : InetAddress.getAllByName(databaseIP)) {
+                        if (InetAddressValidator.getInstance().isValidInet4Address(toCheck.getHostAddress())) {
+                            res.add(toCheck);
+                        }
+                    }
+
+                    final InetAddress lastAddr = res.remove(res.size() - 1);
+                    final StringBuilder connection = new StringBuilder();
+                    connection.append(MONGO_DB_PROTOCOL);
+                    if (!databaseName.equals("") && !databasePassword.equals("")) {
+                        connection.append(databaseUsername)
+                                .append(":")
+                                .append(databasePassword)
+                                .append("@");
+                    }
+                    for (final InetAddress addr : res) {
+                        // Create MongoDB connection
+                        connection
+                                .append(addr.getHostAddress())
+                                .append(":")
+                                .append(databasePort)
+                                .append(",");
+                    }
+
+                    connection.append(lastAddr.getHostAddress())
+                            .append(":")
+                            .append(databasePort);
+
+                    LOG.info("Trying to establish connection with the following url: " + connection.toString());
+
+                    mongoClient = MongoClients.create(connection.toString());
+
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
             }
             return mongoClient.getDatabase(databaseName);
         }
