@@ -1,6 +1,8 @@
 package org.augugrumi.roulette.util;
 
 import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -206,7 +208,12 @@ public class ConfigManager {
                         .append(databaseIP)
                         .append(":")
                         .append(databasePort);
-                mongoClient = MongoClients.create(new ConnectionString(connection.toString()));
+                mongoClient = MongoClients.create(
+                        MongoClientSettings
+                                .builder()
+                                .readPreference(ReadPreference.secondary())
+                                .applyConnectionString(new ConnectionString(connection.toString()))
+                                .build());
             }
             return mongoClient.getDatabase(databaseName);
         }
