@@ -165,6 +165,7 @@ public class ConfigManager {
                     this.databaseUsername = databaseJson.getString(DBJSONDefinitions.USERNAME_FIELD);
                     this.databasePassword = databaseJson.getString(DBJSONDefinitions.PASSWORD_FIELD);
                 }
+                this.databaseName = ROULETTE_DEFAULT_DB_NAME;
         }
 
         /**
