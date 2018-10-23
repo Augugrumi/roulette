@@ -211,7 +211,7 @@ public class ConfigManager {
                 mongoClient = MongoClients.create(
                         MongoClientSettings
                                 .builder()
-                                .readPreference(ReadPreference.secondary())
+                                .readPreference(ReadPreference.secondaryPreferred())
                                 .applyConnectionString(new ConnectionString(connection.toString()))
                                 .build());
             }
