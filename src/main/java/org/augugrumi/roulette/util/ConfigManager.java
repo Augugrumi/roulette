@@ -46,7 +46,7 @@ public class ConfigManager {
 
         // Default values
         final private int MONGO_DB_STANDARD_PORT = 27017;
-        final private String MONGO_DB_PROTOCOL = "mongodb://";
+        final private String MONGO_DB_PROTOCOL = "mongodb+srv://";
         final private String ROULETTE_DEFAULT_DB_NAME = "roulette_db";
         final public String ROULETTE_DEFAULT_ROUTE_COLLECTION_NAME = "route";
         // TODO change default values
