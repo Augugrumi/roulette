@@ -6,12 +6,17 @@ import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import org.apache.commons.validator.routines.InetAddressValidator;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Singleton handling requests to the true configuration class
@@ -46,7 +51,7 @@ public class ConfigManager {
 
         // Default values
         final private int MONGO_DB_STANDARD_PORT = 27017;
-        final private String MONGO_DB_PROTOCOL = "mongodb+srv://";
+        final private String MONGO_DB_PROTOCOL = "mongodb://";
         final private String ROULETTE_DEFAULT_DB_NAME = "roulette_db";
         final public String ROULETTE_DEFAULT_ROUTE_COLLECTION_NAME = "route";
         // TODO change default values
@@ -198,22 +203,49 @@ public class ConfigManager {
 
         public synchronized MongoDatabase getDatabase () {
             if (mongoClient == null) {
-                // Create MongoDB connection
-                StringBuilder connection = new StringBuilder();
-                connection.append(MONGO_DB_PROTOCOL)
-                        .append(databaseUsername)
-                        .append(":")
-                        .append(databasePassword)
-                        .append("@")
-                        .append(databaseIP);
-                        /*.append(":")
-                        .append(databasePort);*/
-                mongoClient = MongoClients.create(
-                        MongoClientSettings
-                                .builder()
-                                .readPreference(ReadPreference.secondaryPreferred())
-                                .applyConnectionString(new ConnectionString(connection.toString()))
-                                .build());
+                try {
+                    List<InetAddress> res = new ArrayList<>();
+
+                    for (InetAddress toCheck : InetAddress.getAllByName(databaseIP)) {
+                        if (InetAddressValidator.getInstance().isValidInet4Address(toCheck.getHostAddress())) {
+                            res.add(toCheck);
+                        }
+                    }
+
+                    final InetAddress lastAddr = res.remove(res.size() - 1);
+                    final StringBuilder connection = new StringBuilder();
+                    connection.append(MONGO_DB_PROTOCOL);
+                    for (final InetAddress addr : res) {
+                        // Create MongoDB connection
+                        connection.append(databaseUsername)
+                                .append(":")
+                                .append(databasePassword)
+                                .append("@")
+                                .append(addr.getHostAddress())
+                                .append(":")
+                                .append(databasePort)
+                                .append(",");
+                    }
+
+                    connection.append(databaseUsername)
+                            .append(":")
+                            .append(databasePassword)
+                            .append("@")
+                            .append(lastAddr.getHostAddress())
+                            .append(":")
+                            .append(databasePort);
+
+                    mongoClient = MongoClients.create(
+                            MongoClientSettings
+                                    .builder()
+                                    .readPreference(ReadPreference.nearest())
+                                    .applyConnectionString(new ConnectionString(connection.toString()))
+                                    .build());
+
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
             }
             return mongoClient.getDatabase(databaseName);
         }
