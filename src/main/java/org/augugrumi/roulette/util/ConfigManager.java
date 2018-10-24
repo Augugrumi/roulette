@@ -214,8 +214,8 @@ public class ConfigManager {
                     connection.append(MONGO_DB_PROTOCOL);
                     if (databaseName.equals("") || databasePassword.equals("")) {
                         connection.append(databaseUsername)
-                            .append(":")
-                            .append(databasePassword)
+                                .append(":")
+                                .append(databasePassword)
                                 .append("@");
                     }
                     for (final InetAddress addr : res) {
