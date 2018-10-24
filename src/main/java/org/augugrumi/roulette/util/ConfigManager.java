@@ -214,26 +214,25 @@ public class ConfigManager {
 
                     final InetAddress lastAddr = res.remove(res.size() - 1);
                     final StringBuilder connection = new StringBuilder();
-                    connection.append(MONGO_DB_PROTOCOL);
+                    connection.append(MONGO_DB_PROTOCOL)
+                            .append(databaseUsername)
+                            .append(":")
+                            .append(databasePassword)
+                            .append("@");
                     for (final InetAddress addr : res) {
                         // Create MongoDB connection
-                        connection.append(databaseUsername)
-                                .append(":")
-                                .append(databasePassword)
-                                .append("@")
+                        connection
                                 .append(addr.getHostAddress())
                                 .append(":")
                                 .append(databasePort)
                                 .append(",");
                     }
 
-                    connection.append(databaseUsername)
-                            .append(":")
-                            .append(databasePassword)
-                            .append("@")
-                            .append(lastAddr.getHostAddress())
+                    connection.append(lastAddr.getHostAddress())
                             .append(":")
                             .append(databasePort);
+
+                    LOG.info("Trying to establish connection with the following url: " + connection.toString());
 
                     mongoClient = MongoClients.create(
                             MongoClientSettings
