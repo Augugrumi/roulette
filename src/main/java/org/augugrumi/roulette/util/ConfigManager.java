@@ -1,8 +1,5 @@
 package org.augugrumi.roulette.util;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -214,11 +211,11 @@ public class ConfigManager {
 
                     final InetAddress lastAddr = res.remove(res.size() - 1);
                     final StringBuilder connection = new StringBuilder();
-                    connection.append(MONGO_DB_PROTOCOL)
-                            .append(databaseUsername)
+                    connection.append(MONGO_DB_PROTOCOL);
+                            /*.append(databaseUsername)
                             .append(":")
                             .append(databasePassword)
-                            .append("@");
+                            .append("@");*/
                     for (final InetAddress addr : res) {
                         // Create MongoDB connection
                         connection
@@ -234,12 +231,14 @@ public class ConfigManager {
 
                     LOG.info("Trying to establish connection with the following url: " + connection.toString());
 
-                    mongoClient = MongoClients.create(
+                    mongoClient = /*MongoClients.create(
                             MongoClientSettings
                                     .builder()
                                     .readPreference(ReadPreference.nearest())
+                                    .writeConcern(WriteConcern.NORMAL)
                                     .applyConnectionString(new ConnectionString(connection.toString()))
-                                    .build());
+                                    .build());*/
+                            MongoClients.create(connection.toString());
 
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
