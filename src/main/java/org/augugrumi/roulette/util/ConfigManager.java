@@ -64,8 +64,8 @@ public class ConfigManager {
         final private String R_DB_USERNAME = "ROULETTE_DATABASE_USERNAME";
         final private String R_DB_PASSWORD = "ROULETTE_DATABASE_PASSWORD";
         final private String R_DB_JSON = "ROULETTE_DATABASE_JSON_CONFIG";
-        final private String R_DEF_ING = "DEFAULT_INGRESS";
-        final private String R_DEF_EGR = "DEFAULT_EGRESS";
+        final private String R_DEF_ING = "IRONHIDE_INGRESS";
+        final private String R_DEF_EGR = "IRONHIDE_EGRESS";
         // End config keys
 
         final private static Logger LOG = LoggerFactory.getLogger(Config.class);

@@ -19,6 +19,8 @@ public class ArgParser {
     final private static String API_CONF_PATH_OPTION_SHORT = "f";
     final private static String PORT_OPTION_SHORT = "p";
     final private static String DATABASE_JSON_OPTION_SHORT = "d";
+    final private static String INGRESS_URL_OPTION_SHORT = "i";
+    final private static String EGRESS_URL_OPTION_SHORT = "e";
 
     // Long options
     //final private static String API_CONF_PATH_OPTION_LONG = "file";
@@ -43,6 +45,8 @@ public class ArgParser {
         ARGS_TO_PARSE.addOption(PORT_OPTION_SHORT, true, "Port where Harbor should run");
         //ARGS_TO_PARSE.addOption(PORT_OPTION_LONG, true, "Port where Harbor should run");
         ARGS_TO_PARSE.addOption(DATABASE_JSON_OPTION_SHORT, true, "Path to the database JSON config");
+        ARGS_TO_PARSE.addOption(INGRESS_URL_OPTION_SHORT, "URL for the default Ingress");
+        ARGS_TO_PARSE.addOption(EGRESS_URL_OPTION_SHORT, "URL for the default Egress");
     }
 
     /**
@@ -75,6 +79,14 @@ public class ArgParser {
                 e.printStackTrace();
                 throw new ParseException("Failure parsing the org.augugrumi.roulette.database JSON config file: not a valid JSON");
             }
+        }
+        if (cmd.hasOption(INGRESS_URL_OPTION_SHORT) && cmd.getOptionValue(INGRESS_URL_OPTION_SHORT) != null) {
+            ConfigManager.getConfig().setDefaultIngress(cmd.getOptionValue(INGRESS_URL_OPTION_SHORT));
+            LOG.debug(INGRESS_URL_OPTION_SHORT + " passed as argument. Value: " + cmd.getOptionValue(INGRESS_URL_OPTION_SHORT));
+        }
+        if (cmd.hasOption(EGRESS_URL_OPTION_SHORT) && cmd.getOptionValue(EGRESS_URL_OPTION_SHORT) != null) {
+            ConfigManager.getConfig().setDefaultEgress(cmd.getOptionValue(EGRESS_URL_OPTION_SHORT));
+            LOG.debug(EGRESS_URL_OPTION_SHORT + " passed as argument. Value: " + cmd.getOptionValue(EGRESS_URL_OPTION_SHORT));
         }
     }
 }

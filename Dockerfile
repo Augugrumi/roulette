@@ -35,6 +35,8 @@ LABEL description="Roulette Docker image"
 # -ROULETTE_DATABASE_USERNAME: username which Roulette will use to log in the db
 # -ROULETTE_DATABASE_PASSWORD: password which Roulette will use to log in the db
 # -ROULETTE_DATABASE_JSON_CONFIG: convenience file to log database settings at once
+# -IRONHIDE_INGRESS: default url for Ironhide ingress
+# -IRONHIDE_EGRESS: default url for Ironhide egress
 ENV ROULETTE_API_CONFIG=api_sample.json
 
 RUN mkdir -p /config/
