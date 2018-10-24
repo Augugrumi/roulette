@@ -205,9 +205,9 @@ public class ConfigManager {
                         .append(":")
                         .append(databasePassword)
                         .append("@")
-                        .append(databaseIP)
-                        .append(":")
-                        .append(databasePort);
+                        .append(databaseIP);
+                        /*.append(":")
+                        .append(databasePort);*/
                 mongoClient = MongoClients.create(
                         MongoClientSettings
                                 .builder()
