@@ -4,21 +4,61 @@ version: '3.1'
 # not suitable for production environments!
 services:
 
+#  mongo:
+#    image: mongo
+#    restart: always
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: test
+#      MONGO_INITDB_ROOT_PASSWORD: a123
+
+  alpine:
+    image: alpine
+    restart: always
+    command: sh -c "apk add mongodb; sleep 3600"
+
   mongo:
     image: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: test
-      MONGO_INITDB_ROOT_PASSWORD: a123
+      ME_CONFIG_MONGODB_ADMINUSERNAME: test
+      ME_CONFIG_MONGODB_ADMINPASSWORD: a123
+#    extra_hosts:
+#      - secondary1
+#      - secondary2
+    command: mongod --smallfiles --replSet rs
+
+  secondary1:
+    image: mongo
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: test
+      ME_CONFIG_MONGODB_ADMINPASSWORD: a123
+#    extra_hosts:
+#      - mongo
+#      - secondary2
+    hostname: mongo
+    command: mongod --smallfiles --replSet rs
+
+  secondary2:
+    image: mongo
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: test
+      ME_CONFIG_MONGODB_ADMINPASSWORD: a123
+#    extra_hosts:
+#    - secondary1
+#    - mongo
+    hostname: mongo
+    command: mongod --smallfiles --replSet rs
 
   mongo-express:
     image: mongo-express
     restart: always
     ports:
       - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: test
-      ME_CONFIG_MONGODB_ADMINPASSWORD: a123
+#    environment:
+#      ME_CONFIG_MONGODB_ADMINUSERNAME: test
+#      ME_CONFIG_MONGODB_ADMINPASSWORD: a123
 
   roulette:
     build: .
