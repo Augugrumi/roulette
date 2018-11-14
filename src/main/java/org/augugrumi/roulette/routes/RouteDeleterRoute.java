@@ -3,13 +3,13 @@ package org.augugrumi.roulette.routes;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.augugrumi.roulette.database.entrybuilders.RouteEntry;
+import org.augugrumi.roulette.routes.util.ResponseCreator;
+import org.augugrumi.roulette.util.ConfigManager;
 import org.bson.Document;
 import org.slf4j.Logger;
-import org.augugrumi.roulette.routes.util.ResponseCreator;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import org.augugrumi.roulette.util.ConfigManager;
 
 import static org.augugrumi.roulette.database.DBValues.ROUTE_COLLECTION_NAME;
 import static org.augugrumi.roulette.routes.util.ParamsName.Route.SPI;
@@ -31,7 +31,7 @@ public class RouteDeleterRoute implements Route {
 
         if (toRemove == null) {
             res = new ResponseCreator(ResponseCreator.ResponseType.ERROR);
-            res.add(ResponseCreator.Fields.REASON, "Route does not existing");
+            res.add(ResponseCreator.Fields.REASON, "Route does not exist");
         } else {
             LOG.debug("Deleting route " + SPId);
             routes.deleteOne(toRemove);
